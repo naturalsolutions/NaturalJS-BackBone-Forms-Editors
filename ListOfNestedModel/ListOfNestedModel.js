@@ -3,10 +3,10 @@
   'underscore',
   'backbone',
   'marionette',
-  'backbone-forms',
+  'backbone_forms',
   'backbone.list',
-  'requirejs-text!libs/ListOfNestedModel/Templates/ListOfNestedModel.html',
-  'requirejs-text!libs/ListOfNestedModel/Templates/ListOfNestedModelDisabled.html'
+  'requirejs-text!./Templates/ListOfNestedModel.html',
+  'requirejs-text!./Templates/ListOfNestedModelDisabled.html'
   ], function ($, _, Backbone, Marionette, BackboneForm, List,tpl,tpldisabled) {
 
 
