@@ -30,15 +30,11 @@ define([
                 'fr':'',
                 'en':'En'
             };
-            console.log(this);
-            console.log('*********************** OPTIONS *******************************');
-            console.log(options);
             Form.editors.Base.prototype.initialize.call(this, options);
             this.template = options.template || this.constructor.template;
             this.id = options.id;
             var editorAttrs = "";
             if (options.schema.editorAttrs && options.schema.editorAttrs.disabled) {
-
                 editorAttrs += 'disabled="disabled"';
             }
             var tplValeurs = {
@@ -80,15 +76,17 @@ define([
                     inputValue: _this.value,
                     startId: _this.startId
                 });
+
             }).defer();
             var TypeField = "FullPath";
             if (_this.value && _this.value.indexOf(">") == -1) {
                 TypeField = 'Name';
             }
+            var valeur = _this.value || '';
             $.ajax({
                 url: _this.wsUrl + "/ThesaurusReadServices.svc/json/getTRaductionByType",
                 timeout: 10000,
-                data: '{ "sInfo" : "' + _this.value || '' + '", "sTypeField" : "' + TypeField + '", "iParentId":"' + _this.startId + '" }',
+                data: '{ "sInfo" : "' + valeur + '", "sTypeField" : "' + TypeField + '", "iParentId":"' + _this.startId + '" }',
                 dataType: "json",
                 type: "POST",
                 contentType: "application/json; charset=utf-8",
@@ -99,6 +97,7 @@ define([
                         translatedValue = data["TTop_Name" + _this.languages[_this.lng.toLowerCase()]];
                     }
                     _this.$el.find('#' + _this.id).val(translatedValue);
+                    _this.$el.find('#' + _this.id + '_value').val(data["TTop_FullPath"]);
                 }
             });
             return this;
