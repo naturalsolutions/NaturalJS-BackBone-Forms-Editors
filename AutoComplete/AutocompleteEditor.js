@@ -41,6 +41,7 @@
             );
             console.log($el);
             this.setElement($el);
+            //$(this).append($el);
             var _this = this;
             _(function () {
                 var optionsJquery = _this.autocompleteSource;

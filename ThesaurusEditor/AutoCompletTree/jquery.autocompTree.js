@@ -96,9 +96,9 @@
 					$me.val(parametres.inputValue);
 
 					//Initialisation de l'arbre
-					console.log($('#treeView' + $me.attr("id")));
-					console.log(parametres.webservices);
-					console.log(dataToSend);
+					//console.log($('#treeView' + $me.attr("id")));
+					//console.log(parametres.webservices);
+					//console.log(dataToSend);
 					$('#treeView' + $me.attr("id")).fancytree({
 						debugLevel: 0,
 						extensions: ["filter"],
