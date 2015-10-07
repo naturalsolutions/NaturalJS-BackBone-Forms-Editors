@@ -2,12 +2,12 @@ define([
     'jquery',
     'backbone',
     'backbone_forms',
-
+    'dateTimePicker'
 ], function(
-    $, Backbone, Form
+    $, Backbone, Form, datetimepicker
 ){
     'use strict';
-    return Form.editors.DateTimePicker = Form.editors.Base.extend({
+    return Form.editors.DateTimePickerEditor = Form.editors.Base.extend({
 
 
         previousValue: '',
@@ -50,7 +50,7 @@ define([
                 hidden : (options.schema.editable != false) ? '' : 'hidden',
             })));
             this.setElement($el);
-
+            //console.log('**** HIDDEN ************** ', (options.schema.editable != false) ? '' : 'hidden', options.schema.editable);
             $($el[0]).datetimepicker();
 
             //tmp solution ? datetimepicker remove the value
@@ -63,6 +63,6 @@ define([
         },
         }, {
         // STATICS
-            template: _.template('<div class="input-group date" id="dateTimePicker" data-editors="Date_"><span class="input-group-addon <%= hidden %>"><span class="glyphicon-calendar glyphicon"></span></span><input id="c24_Date_" name="Date_" class="<%= editorClass %> <%= required %>" type="text" placeholder="jj/mm/aaaa hh:mm:ss" data-date-format="DD/MM/YYYY HH:mm:ss" value="<%= value %>" <%= editable %> ></div>', null, Form.templateSettings)
+            template: _.template('<div class="input-group date dateTimePicker" id="dateTimePicker" data-editors="Date_"><span class="input-group-addon <%= hidden %>"><span class="reneco-calendar reneco"></span></span><input id="c24_Date_" name="Date_" class="<%= editorClass %> <%= required %>" type="text" placeholder="jj/mm/aaaa hh:mm:ss" data-date-format="DD/MM/YYYY HH:mm:ss" value="<%= value %>" <%= editable %> ></div>', null, Form.templateSettings)
     });
 });

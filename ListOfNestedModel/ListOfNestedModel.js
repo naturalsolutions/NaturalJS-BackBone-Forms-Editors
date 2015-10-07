@@ -5,7 +5,7 @@
   'marionette',
   'backbone_forms',
   'backbone.list',
-  'requirejs-text!vendors/ListOfNestedModel/Templates/ListOfNestedModel.html',
+  'requirejs-text!./Templates/ListOfNestedModel.html',
 
   ], function ($, _, Backbone, Marionette, BackboneForm, List,tpl) {
 

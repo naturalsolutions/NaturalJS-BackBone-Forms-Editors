@@ -1,11 +1,13 @@
 define([
 	'jquery',
+    'underscore',
 	'backbone',
 	'backbone_forms',
     'requirejs-text!./FileUploadEditorTemplate.html',
-    './MimeType'
-], function (
-	$, Backbone, Form, Template, MimeTypeObject
+    './MimeType',
+    'sweetalert'
+
+], function ($, _, Backbone, Form, Template, MimeTypeObject,sweetAlert
 ) {
     'use strict';
     return Form.editors.FileUploadEditor = Form.editors.Base.extend({
@@ -18,7 +20,6 @@ define([
             'click .uploadBtn': 'uploadFile',
             'click .downloadBtn': 'downloadFile',
             'click .deletefileBtn': 'deleteFile'
-            
         },
 
 
@@ -33,13 +34,9 @@ define([
         },
 
         initialize: function (options) {
-            console.log('options', options);
             Form.editors.Base.prototype.initialize.call(this, options);
             this.template = options.template || Template;
             this.options = options;
-            console.log('this', this);
-            console.log('options', options);
-            console.log('value', this.value);
             //Passer ça en template
             this._uploadurl = options.uploadurl;
             this.existingFiles = this.options.model.get(this.key);
@@ -49,10 +46,9 @@ define([
 
         },
 
+
         getValue: function () {
             return this.existingFiles;
-            
-            return fileName ? JSON.stringify(fileName) : "";
         },
 
         setValue: function (value) {
@@ -69,7 +65,7 @@ define([
             var options = this.options;
             var schema = this.schema;
             var $el = _.template(
-                this.template, { id: this.id, key: this.key }
+                this.template, { id: this.id, key: this.key,acceptedFiles:this.options.schema.options.acceptedFiles,editorClass:this.options.schema.editorClass }
             );
 
 
@@ -78,32 +74,36 @@ define([
 
             return this;
         },
+
         displayExistingFiles: function (options) {
-            console.log('***************displayExistingFiles',this.existingFiles);
+
             var HtmlExistingFiles = "";
 
 
             for (var i = 0 ; i < this.existingFiles.length ; i++) {
                 var file = this.existingFiles[i];
-                console.log('Adding file', file);
                 HtmlExistingFiles += '<div><span class="downloadBtn" FileId="' + file.FileId + '"  id="FileGet_' + this.id + '" getUrl="' + file.url + '" fileExtension="' + file.FileExtension + '"  >' + file.FileName + '</span>';
-                HtmlExistingFiles += '<span id="FileGet_' + this.id + '" class="deletefileBtn" delUrl="' + file.urldelete + '" FileId="' + file.FileId + '" >&nbsp DEL</span></div>';
+                HtmlExistingFiles += '&nbsp&nbsp<span id="FileDel_' + this.id + '" class="deletefileBtn reneco reneco-trash" delUrl="' + file.urldelete + '" FileId="' + file.FileId + '" ></span></div>';
             }
-            console.log(HtmlExistingFiles);
-            console.log(this.$el.find('#ExistingFiles_' + this.id));
             if (options.onInit) {
                 this.$el.find('#ExistingFiles_' + this.id).html(HtmlExistingFiles);
             }
             else {
                 $('#ExistingFiles_' + this.id).html(HtmlExistingFiles);
             }
-
         },
         uploadFile: function (eventType) {
+            
+            if (eventType.currentTarget.id != ('bbfUploadBtn_' + this.id)) {
+                // Not concerning this input 
+                return;
+            }
+            
+
             $('#bbfUploadBtn_' + this.id).attr('style', 'display:none');
             var _this = this;
             //Tester la valeur de l'id
-            console.log('uploadFile');
+
             var fd = new FormData();
             var fileUrl = this.schema.options.uploadurl;
             var file = $('#input_' + this.id)[0].files[0];
@@ -127,10 +127,7 @@ define([
                 contentType: false,
                 data: fd
             }).success(function (data) {
-                console.log('***********************UPLOAD FINISHED********************', data);
-                console.log(data);
 
-                
                 _this.existingFiles.push(data);
                 _this.displayExistingFiles({ onInit: true });
                 // TODO ajouter le fichier au modèle et refaire un display 
@@ -140,7 +137,7 @@ define([
         },
         downloadFile: function (eventType) {
             var _this = this;
-            console.log(eventType)
+            
             if (eventType.currentTarget.id == ('FileGet_' + this.id)) {
                 // OK c'est bien liè à mon editeur
 
@@ -148,10 +145,7 @@ define([
                 $.ajax({
                     url: $(eventType.currentTarget).attr('getUrl'),
                     type: 'GET',
-                    data: {
-                        fileId: $(eventType.currentTarget).attr('fileid'),
-                        //order_by : '1'
-                    }
+
                 }).done(function (data) {
 
                     console.log(data);
@@ -172,35 +166,32 @@ define([
         },
         deleteFile: function (eventType) {
 
-            console.log(eventType.currentTarget);
+            if (eventType.currentTarget.id != ('FileDel_' + this.id)) {
+                // Not concerning this input 
+                return;
+            }
+            var _this = this;
             
-            $.ajax({
-                url: $(eventType.currentTarget).attr('delUrl'),
-                type: 'DEL',
-                data: {
-                    fileId: $(eventType.currentTarget).attr('fileid'),
-                    //order_by : '1'
-                }
-            }).done(function (data) {
-                /*
-                console.log(data);
-                var link = document.createElement('a');
-                var typeMime = MimeType[$(eventType.currentTarget).attr('fileExtension').toLowerCase()];
-                if (typeMime == null) {
-                    typeMime = ''
-                }
-                else {
-                    typeMime = 'data:' + typeMime + ';charset=utf-8;base64,'
-                }
-                link.download = $(eventType.currentTarget).text();
-                link.href = typeMime + data;;
-                link.click();
-                //window.location.href = 'data:text/csv;charset=utf-8;base64,' + data;
-                */
-            });
+            sweetAlert({ title: "Are you sure?", text: "Are you sur you want to delete the file ", type: "warning", confirmButtonText: "Yes, delete file", cancelButtonText: "No, keep the file", showCancelButton: true }
+                        , function (isConfirm) {
+                            if (isConfirm) {
+                                var fileid = $(eventType.currentTarget).attr('fileid');
+                                
+                                $.ajax({
+                                    url: $(eventType.currentTarget).attr('delUrl'),
+                                    type: 'DELETE',
+                                }).success(function (data) {
+                                    console.log('deleted');
+                                    _this.existingFiles = _.filter(_this.existingFiles, function (n) {
+                                        return n.FileId != fileid;
+                                    })
+                                    _this.displayExistingFiles({ onInit: false });
+                                });
 
+                            }
+                        });
 
-
+			//console.log(eventType.currentTarget);
         },
         testFile: function (eventType) {
             var re = new RegExp(/.[a-zA-Z]+$/);
@@ -215,15 +206,17 @@ define([
                     $('#bbfUploadBtn_' + this.id).attr('style', 'display:visible');
                 }
             }
+
             else {
                 $('#bbfUploadBtn_' + this.id).attr('style', 'display:visible');
             }
-            console.log(this.options);
+
         },
         removeFile: function (eventType) {
             //Tester la valeur de l'id
             this._uploadInput.val("");
             this._error.text('The file uploader is now empty').show();
+
             this._removeBtn.hide();
         }
     }, {
