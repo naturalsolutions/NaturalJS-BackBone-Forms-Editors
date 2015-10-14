@@ -93,12 +93,12 @@ define([
             }
         },
         uploadFile: function (eventType) {
-            
+
             if (eventType.currentTarget.id != ('bbfUploadBtn_' + this.id)) {
-                // Not concerning this input 
+                // Not concerning this input
                 return;
             }
-            
+
 
             $('#bbfUploadBtn_' + this.id).attr('style', 'display:none');
             var _this = this;
@@ -130,53 +130,35 @@ define([
 
                 _this.existingFiles.push(data);
                 _this.displayExistingFiles({ onInit: true });
-                // TODO ajouter le fichier au modèle et refaire un display 
+                // TODO ajouter le fichier au modèle et refaire un display
             }
 
             );
         },
         downloadFile: function (eventType) {
             var _this = this;
-            
+
             if (eventType.currentTarget.id == ('FileGet_' + this.id)) {
                 // OK c'est bien liè à mon editeur
-
-                console.log($(eventType.currentTarget).attr('getUrl'));
-                $.ajax({
-                    url: $(eventType.currentTarget).attr('getUrl'),
-                    type: 'GET',
-
-                }).done(function (data) {
-
-                    console.log(data);
-                    var link = document.createElement('a');
-                    var typeMime = MimeType[$(eventType.currentTarget).attr('fileExtension').toLowerCase()];
-                    if (typeMime == null) {
-                        typeMime = ''
-                    }
-                    else {
-                        typeMime = 'data:' + typeMime + ';charset=utf-8;base64,'
-                    }
-                    link.download = $(eventType.currentTarget).text();
-                    link.href = typeMime + data;;
-                    link.click();
-                    //window.location.href = 'data:text/csv;charset=utf-8;base64,' + data;
-                });
+                var link = document.createElement('a');
+                link.download = $(eventType.currentTarget).attr('getUrl');
+                link.href = $(eventType.currentTarget).attr('getUrl');
+                link.click();
             }
         },
         deleteFile: function (eventType) {
 
             if (eventType.currentTarget.id != ('FileDel_' + this.id)) {
-                // Not concerning this input 
+                // Not concerning this input
                 return;
             }
             var _this = this;
-            
+
             sweetAlert({ title: "Are you sure?", text: "Are you sur you want to delete the file ", type: "warning", confirmButtonText: "Yes, delete file", cancelButtonText: "No, keep the file", showCancelButton: true }
                         , function (isConfirm) {
                             if (isConfirm) {
                                 var fileid = $(eventType.currentTarget).attr('fileid');
-                                
+
                                 $.ajax({
                                     url: $(eventType.currentTarget).attr('delUrl'),
                                     type: 'DELETE',
