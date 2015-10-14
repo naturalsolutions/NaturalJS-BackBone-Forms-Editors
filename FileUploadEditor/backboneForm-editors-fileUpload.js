@@ -70,6 +70,9 @@ define([
 
 
             this.setElement($el);
+            if (this.schema.editable == false) {
+                this.$el.find('.UploadInForm').attr('style', 'display:none');
+            }
             this.displayExistingFiles({ onInit: true });
 
             return this;
@@ -83,7 +86,9 @@ define([
             for (var i = 0 ; i < this.existingFiles.length ; i++) {
                 var file = this.existingFiles[i];
                 HtmlExistingFiles += '<div><span class="downloadBtn" FileId="' + file.FileId + '"  id="FileGet_' + this.id + '" getUrl="' + file.url + '" fileExtension="' + file.FileExtension + '"  >' + file.FileName + '</span>';
-                HtmlExistingFiles += '&nbsp&nbsp<span id="FileDel_' + this.id + '" class="deletefileBtn reneco reneco-trash" delUrl="' + file.urldelete + '" FileId="' + file.FileId + '" ></span></div>';
+                if (this.schema.editable != false) {
+                    HtmlExistingFiles += '&nbsp&nbsp<span id="FileDel_' + this.id + '" class="deletefileBtn reneco reneco-trash" delUrl="' + file.urldelete + '" FileId="' + file.FileId + '" ></span></div>';
+                }
             }
             if (options.onInit) {
                 this.$el.find('#ExistingFiles_' + this.id).html(HtmlExistingFiles);
@@ -140,6 +145,7 @@ define([
 
             if (eventType.currentTarget.id == ('FileGet_' + this.id)) {
                 // OK c'est bien liè à mon editeur
+
                 var link = document.createElement('a');
                 link.download = $(eventType.currentTarget).attr('getUrl');
                 link.href = $(eventType.currentTarget).attr('getUrl');

@@ -58,12 +58,11 @@
     }, {
       //STATICS
       template: _.template('\
-        <div class="col-md-12 clearfix">\
-          <span data-editor class="clearfix"></span>\
-          <div class="col-xs-12 clearfix">\
-          <button type="button" data-action="remove" class="btn btn-xs btn-danger <%= hidden %>"><span class="reneco reneco-close"></span></button>\
+        <div class="col-md-12 clearfix list-item">\
+          <span data-editor class="col-md-10 list-content"></span>\
+          <div class="list-remove col-md-2">\
+            <button type="button" data-action="remove" class="btn btn-xs btn-danger list-remove <%= hidden %>"><span class="reneco reneco-close"></span></button>\
           </div>\
-          <br />\
         </div>\
       ', null, Form.templateSettings),
 
