@@ -98,7 +98,11 @@ define([
                     }
                     _this.$el.find('#' + _this.id).val(translatedValue);
                     _this.$el.find('#' + _this.id + '_value').val(data["TTop_FullPath"]);
+                },
+                error: function (data) {
+                    //console.log('****************************************** ERROR *******************', data);
                 }
+
             });
             return this;
         },
