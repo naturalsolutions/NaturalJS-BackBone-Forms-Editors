@@ -51,7 +51,7 @@
 
           //Replace the entire element so there isn't a wrapper tag
           this.setElement($el);
-            
+
           return this;
         },
 
@@ -86,7 +86,14 @@
             options.schema.validators = [];
             options.schema.itemType = 'InlineNestedModel';
             var editors = Form.editors;
-
+            if (options.schema.editable == false) {
+                if (options.schema.editorAttrs == null){
+                  options.schema.editorAttrs = {disabled : true};
+                }
+                else {
+                  options.schema.editorAttrs.disabled = true;
+                }
+            }
 
             editors.Base.prototype.initialize.call(this, options);
 
@@ -96,10 +103,10 @@
             this.tplDatas.hidden = '';
 
             if (!schema) throw new Error("Missing required option 'schema'");
-            if (options.schema.editorAttrs && options.schema.editorAttrs.disabled) {
+            if (options.schema.editable == false) {
                 this.tplDatas.hidden = 'hidden';
             }
-            
+
             this.tplDatas.label = this.schema.Name;
             this.template = options.template || _.template(tpl);
 
@@ -145,9 +152,9 @@
           this.setElement($el);
           this.$el.attr('id', this.id);
           this.$el.attr('name', this.key);
-                
+
           if (this.hasFocus) this.trigger('blur', this);
-          
+
           return this;
         },
 
@@ -172,7 +179,7 @@
 
             //Template
             this.template = options.template || this.constructor.template;
-            
+
             var schema = this.schema;
 
             if (!schema.model) throw new Error('Missing required option "schema.model"');
@@ -181,11 +188,6 @@
         },
 
         getValue: function () {
-/*            if (this.modalForm) {
-                this.value = this.modalForm.getValue();
-            }
-            return this.value;*/
-
             /*TODO default model data for new nested Model */
             if (this.modalForm) {
                 var curValue = this.modalForm.getValue();
@@ -206,16 +208,20 @@
         render: function () {
             var self = this,
                 ModalForm = this.form.constructor;
-
-
             var obj = this.nestedSchema;
-            for (var key in obj) {
-                obj[key].editorAttrs = this.schema.editorAttrs
+
+            if (this.schema.editable==false){
+              for (var key in obj) {
+                if (obj[key].editorAttrs == null){
+                  obj[key].editorAttrs = {disabled : true};
+                }
+                else {
+                  obj[key].editorAttrs.disabled = true;
+                }
+
+              }
             }
-
-
-
-            obj[Object.keys(obj)[0]].editorAttrs = this.schema.editorAttrs;
+            obj[Object.keys(obj)[0]].editable = this.schema.editable;
 
             var form = this.modalForm = new ModalForm({
                 schema: this.nestedSchema,
