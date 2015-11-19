@@ -59,7 +59,7 @@ define([
 
             var $el = $(this.template);
             this.setElement($el);
-
+            var _this = this ;
 
             var _this = this;
             _(function () {
@@ -93,9 +93,10 @@ define([
                 success: function (data) {
                     
                     var translatedValue = data["TTop_FullPath" + _this.languages[_this.lng.toLowerCase()]];
-                    if (TypeField == 'Name') {
+                    if (_this.displayValueName  == 'valueTranslated') {
                         translatedValue = data["TTop_Name" + _this.languages[_this.lng.toLowerCase()]];
                     }
+
                     _this.$el.find('#' + _this.id).val(translatedValue);
                     _this.$el.find('#' + _this.id + '_value').val(data["TTop_FullPath"]);
                 },
