@@ -46,8 +46,8 @@ define([
             this.startId = options.schema.options.startId;
             this.wsUrl = options.schema.options.wsUrl;
             this.lng = options.schema.options.lng;
-            this.displayValueName = options.displayValueName || 'fullpathTranslated';
-            this.storedValueName = options.storedValueName || 'fullpath';
+            this.displayValueName = options.schema.options.displayValueName || 'fullpathTranslated';
+            this.storedValueName = options.schema.options.storedValueName || 'fullpath';
         },
 
         getValue: function () {
