@@ -67,6 +67,7 @@ define([
         },
 
         initialize: function (options) {
+			this.FirstRender = true ;
             this.languages = {
                 'fr':'',
                 'en':'En'
@@ -116,8 +117,24 @@ define([
                         storedValueName: _this.storedValueName
                     },
                     inputValue: _this.value,
-                    startId: _this.startId
+                    startId: _this.startId,
+					/*
+					onInputBlur : function (options) {
+						var value = $('#' + _this.id).val() ;
+						console.log(' ************ validation sur click *****************',value,_this,_this.id);
+						_this.onEditValidation(value) ;
+					},
+					*/
+					onItemClick:function (options) {
+						/*var value = $('#' + _this.id).val() ;
+						console.log(' ************ validation sur click *****************',value,_this,_this.id);
+						_this.onEditValidation(value) ;*/
+						//console.log(' ************ validation sur click *****************',_this,_this.id);
+						//$('#divAutoComp_' + _this.id).removeClass('error') ;
+					}
                 });
+				
+				
                 var TypeField = "FullPath";
                 if (_this.value && _this.value.indexOf(">") == -1) {
                     TypeField = 'Name';
@@ -144,10 +161,65 @@ define([
                         //$('#' + _this.id + '_value').val(this.value);
                     }
                 });
+				if (_this.FirstRender) {
+					_this.$el.find('#' + _this.id).blur(function(options) {
+						console.log('BLUR',options) ;
+						
+						
+						setTimeout (function(options) {
+									var value = _this.$el.find('#' + _this.id ).val() ;
+									console.log(' ************* BLUR VALUE ', value) ;
+									_this.onEditValidation(value) ;
+									},150) ;
+					});
+					
+					console.log(_this.$el.find('#treeView' + _this.id) ) ;
+					/*
+					_this.$el.find('#treeView' + _this.id).hide(function(options) {
+						var value = $('#' + _this.id).text() ;
+						console.log(' ************ validation sur click *****************',value);
+						_this.onEditValidation(value) ;
+					}) ;
+					*/
+				}
+				_this.FirstRender = false ;
             }).defer();
-
             return this;
         },
+		onEditValidation: function (value) {
+			var _this = this ;
+			console.log('Validation on edit ',value,'finvalue') ;
+			console.log(value) ;
+			if (value == null || value == '')  {
+				$('#divAutoComp_' + _this.id).removeClass('error') ;
+				return ;
+			}
+			console.log('Validation on edit Value pas vide ') ;
+			
+				var TypeField = "FullPath";
+                if (value && value.indexOf(">") == -1) {
+                    TypeField = 'Name';
+                }
+				var erreur ;
+
+				$.ajax({
+					url: _this.wsUrl + "/ThesaurusReadServices.svc/json/getTRaductionByType",
+					timeout: 3000,
+					data: '{ "sInfo" : "' + value + '", "sTypeField" : "' + TypeField + '", "iParentId":"' + _this.startId + '" }',
+					dataType: "json",
+					type: "POST",
+					//async:false,
+					contentType: "application/json; charset=utf-8",
+					success: function (data) {
+						console.log('***************************validation OK*******************')
+						$('#divAutoComp_' + _this.id).removeClass('error') ;
+					},
+					error: function (data) {
+						console.log('***************************erreur de validation*******************')
+						$('#divAutoComp_' + _this.id).addClass('error') ;
+					}
+				});
+		},
 
     }, {
         template: '<div><input id="<%=inputID%>" name="<%=inputID%>" class="autocompTree <%=editorClass%>" type="text" placeholder="" <%=editorAttrs%>></div>',
