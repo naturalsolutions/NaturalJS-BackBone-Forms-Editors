@@ -46,8 +46,18 @@ define([
 
     Backbone.Form.validators.Thesaurus = function (options) {
         return function Thesaurus(value) {
-            console.log('validateur', value, options);
-            return null;
+            if (!options.parent.isTermError) {
+                return null ;
+            }
+            console.log('validateur', 'value',value,'options', options);
+            console.log(options.parent);
+            var retour = {
+                type: options.type,
+                message:'' 
+            };
+
+            return retour;
+
         };
     };
 
@@ -78,7 +88,7 @@ define([
             };
             this.validators = options.schema.validators || [];
 
-            this.termError = false;
+            this.isTermError = false;
             Form.editors.Base.prototype.initialize.call(this, options);
             this.template = options.template || this.constructor.template;
             this.id = options.id;
@@ -99,14 +109,14 @@ define([
             this.lng = options.schema.options.lng;
             this.displayValueName = options.schema.options.displayValueName || 'fullpathTranslated';
             this.storedValueName = options.schema.options.storedValueName || 'fullpath';
-            //this.validators.push({ type: 'Thesaurus', startId: this.startId, wsUrl: this.wsUrl });
+            this.validators.push({ type: 'Thesaurus', startId: this.startId, wsUrl: this.wsUrl,parent:this });
             this.translateOnRender = options.translateOnRender || true;
         },
 
         getValue: function () {
 
-            if (this.termError) {
-                return false;
+            if (this.isTermError) {
+                return null;
             }
             return this.$el.find('#' + this.id + '_value').val();
         },
@@ -131,7 +141,7 @@ define([
                     startId: _this.startId,
                 });
 
-                if (translateOnRender) {
+                if (_this.translateOnRender) {
                     _this.validateAndTranslate(_this.value, true);
                 }
                 if (_this.FirstRender) {
@@ -203,7 +213,7 @@ define([
                 return;
             }
 
-            _this.termError = true;
+            _this.isTermError = true;
             //console.log('Validation on edit Value pas vide ');
             _this.validateAndTranslate(value, false);
 
@@ -213,13 +223,16 @@ define([
         displayErrorMsg: function (bool) {
             if (this.editable) {
                 //console.log('boooooool', bool);
-                this.termError = bool;
+                this.isTermError = bool;
                 //console.log('this.$el', this.$el);
-                if (this.termError) {
-                    console.log('Term Error');
+                if (this.isTermError) {
+
+                    //console.log('Term Error');
+                    this.termError = "Invalid term";
                     this.$el.find('#divAutoComp_' + this.id).addClass('error');
                     this.$el.find('#errorMsg').removeClass('hidden');
                 } else {
+                    this.termError = "";
                     this.$el.find('#divAutoComp_' + this.id).removeClass('error');
                     this.$el.find('#errorMsg').addClass('hidden');
                 }
