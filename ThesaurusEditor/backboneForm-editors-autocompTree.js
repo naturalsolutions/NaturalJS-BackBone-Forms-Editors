@@ -162,7 +162,10 @@ define([
             //console.log('validateAndTranslate', value);
             var _this = this;
             
-
+            if (value == null || value == '') {
+                _this.displayErrorMsg(false);
+                return;
+            }
             var TypeField = "FullPath";
             if (value && value.indexOf(">") == -1) {
                 TypeField = 'Name';
@@ -208,10 +211,10 @@ define([
             var _this = this;
             //console.log('Validation on edit ', value, 'finvalue');
             //console.log(value);
-            if (value == null || value == '') {
+            /*if (value == null || value == '') {
                 $('#divAutoComp_' + _this.id).removeClass('error');
                 return;
-            }
+            }*/
 
             _this.isTermError = true;
             //console.log('Validation on edit Value pas vide ');
