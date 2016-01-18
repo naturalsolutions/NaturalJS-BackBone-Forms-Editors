@@ -47,13 +47,13 @@ define([
     Backbone.Form.validators.Thesaurus = function (options) {
         return function Thesaurus(value) {
             if (!options.parent.isTermError) {
-                return null ;
+                return null;
             }
-            console.log('validateur', 'value',value,'options', options);
+            console.log('validateur', 'value', value, 'options', options);
             console.log(options.parent);
             var retour = {
                 type: options.type,
-                message:'' 
+                message: ''
             };
 
             return retour;
@@ -86,7 +86,14 @@ define([
                 'fr': '',
                 'en': 'En'
             };
+
+            this.ValidationRealTime = true;
+            if (options.schema.options.ValidationRealTime == false) {
+                this.ValidationRealTime = false;
+            }
+
             this.validators = options.schema.validators || [];
+
 
             this.isTermError = false;
             Form.editors.Base.prototype.initialize.call(this, options);
@@ -109,7 +116,9 @@ define([
             this.lng = options.schema.options.lng;
             this.displayValueName = options.schema.options.displayValueName || 'fullpathTranslated';
             this.storedValueName = options.schema.options.storedValueName || 'fullpath';
-            this.validators.push({ type: 'Thesaurus', startId: this.startId, wsUrl: this.wsUrl,parent:this });
+            if (this.ValidationRealTime) {
+                this.validators.push({ type: 'Thesaurus', startId: this.startId, wsUrl: this.wsUrl, parent: this });
+            }
             this.translateOnRender = options.translateOnRender || true;
         },
 
@@ -122,7 +131,7 @@ define([
         },
 
         render: function () {
-            
+
             var $el = $(this.template);
             this.setElement($el);
             var _this = this;
@@ -161,7 +170,7 @@ define([
         validateAndTranslate: function (value, isTranslated) {
             //console.log('validateAndTranslate', value);
             var _this = this;
-            
+
             if (value == null || value == '') {
                 _this.displayErrorMsg(false);
                 return;
@@ -209,6 +218,10 @@ define([
         },
         onEditValidation: function (value) {
             var _this = this;
+            if (!this.ValidationRealTime) {
+                this.isTermError = false;
+                return;
+            }
             //console.log('Validation on edit ', value, 'finvalue');
             //console.log(value);
             /*if (value == null || value == '') {
@@ -220,7 +233,7 @@ define([
             //console.log('Validation on edit Value pas vide ');
             _this.validateAndTranslate(value, false);
 
-           
+
         },
 
         displayErrorMsg: function (bool) {
