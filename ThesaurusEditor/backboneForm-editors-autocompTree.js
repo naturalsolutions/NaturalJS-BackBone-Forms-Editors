@@ -67,6 +67,7 @@ define([
         },
 
         initialize: function (options) {
+            Form.editors.Base.prototype.initialize.call(this, options);
 			this.FirstRender = true ;
             this.languages = {
                 'fr':'',
@@ -74,7 +75,7 @@ define([
             };
             this.validators = options.schema.validators || [] ;
             
-            Form.editors.Base.prototype.initialize.call(this, options);
+            
             this.template = options.template || this.constructor.template;
             this.id = options.id;
             var editorAttrs = "";
@@ -118,17 +119,17 @@ define([
                     },
                     inputValue: _this.value,
                     startId: _this.startId,
-					/*
+					
 					onInputBlur : function (options) {
-						var value = $('#' + _this.id).val() ;
-						console.log(' ************ validation sur click *****************',value,_this,_this.id);
+					    var value = _this.getValue();
+						//console.log(' ************ validation sur click *****************',value,_this,_this.id);
 						_this.onEditValidation(value) ;
 					},
-					*/
+					
 					onItemClick:function (options) {
-						/*var value = $('#' + _this.id).val() ;
-						console.log(' ************ validation sur click *****************',value,_this,_this.id);
-						_this.onEditValidation(value) ;*/
+					    var value = _this.getValue();
+						//console.log(' ************ validation sur click *****************',value,_this,_this.id);
+						_this.onEditValidation(value ) ;
 						//console.log(' ************ validation sur click *****************',_this,_this.id);
 						//$('#divAutoComp_' + _this.id).removeClass('error') ;
 					}
@@ -167,7 +168,7 @@ define([
 						
 						
 						setTimeout (function(options) {
-									var value = _this.$el.find('#' + _this.id ).val() ;
+									var value = _this.getValue() ;
 									console.log(' ************* BLUR VALUE ', value) ;
 									_this.onEditValidation(value) ;
 									},150) ;
