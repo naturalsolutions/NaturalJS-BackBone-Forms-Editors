@@ -67,6 +67,7 @@ define([
         },
 
         initialize: function (options) {
+            Form.editors.Base.prototype.initialize.call(this, options);
 			this.FirstRender = true ;
             this.languages = {
                 'fr':'',
@@ -74,7 +75,7 @@ define([
             };
             this.validators = options.schema.validators || [] ;
             
-            Form.editors.Base.prototype.initialize.call(this, options);
+            
             this.template = options.template || this.constructor.template;
             this.id = options.id;
             var editorAttrs = "";
