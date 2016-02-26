@@ -55,7 +55,7 @@ define([
             if (this.format && (this.format.toLowerCase() == 'hh:mm:ss')) {
                 this.classIcon = 'glyphicon-time glyphicon';
             }
-            console.log(this.format);
+            //console.log(this.format);
         },
 
         getValue: function() {
@@ -88,8 +88,8 @@ define([
                 }
                 
               }else {
-                    console.log(this.format)
-                    console.log(options.value)
+                    //console.log(this.format)
+                    //console.log(options.value)
                     if (options.model) {
                       value = options.model.get(this.options.key);
                     }else {
