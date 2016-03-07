@@ -41,7 +41,7 @@ define([
         events: {
             'hide': "hasChanged"
         },
-
+        editable:false,
         hasChanged: function (currentValue) {
             if (currentValue !== this.previousValue) {
                 this.previousValue = currentValue;
@@ -70,10 +70,15 @@ define([
             this.template = options.template || this.constructor.template;
             this.id = options.id;
             var editorAttrs = "";
-            if (options.schema.editorAttrs && options.schema.editorAttrs.disabled) {
-                editorAttrs += 'disabled="disabled"';
-            }
+            
             this.editable = options.schema.editable;
+            if (options.schema.editorAttrs && options.schema.editorAttrs.disabled)  {
+                this.editable = false;
+            }
+            if (this.editable!=null && !this.editable) {
+                editorAttrs += 'disabled="disabled"';
+                this.ValidationRealTime = false;
+            }
             var tplValeurs = {
                 inputID: this.id,
                 editorAttrs: editorAttrs,
@@ -186,9 +191,10 @@ define([
 
                 },
                 error: function (data) {
-
-                    $('#divAutoComp_' + _this.id).addClass('error');
-                    _this.displayErrorMsg(true);
+                    if (_this.editable) {
+                        $('#divAutoComp_' + _this.id).addClass('error');
+                        _this.displayErrorMsg(true);
+                    }
                 }
             });
 

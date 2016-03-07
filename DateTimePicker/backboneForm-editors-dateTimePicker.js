@@ -1,11 +1,12 @@
 define([
+  'underscore',
   'jquery',
   'backbone',
   'backbone_forms',
  'dateTimePicker',
  'moment',
 ], function(
-  $, Backbone, Form,datetimepicker,moment
+  _,$, Backbone, Form,datetimepicker,moment
 ){
   'use strict';
   return Form.editors.DateTimePickerEditor = Form.editors.Base.extend({
