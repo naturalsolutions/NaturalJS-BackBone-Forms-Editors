@@ -112,7 +112,7 @@ define([
             var _this = this;
             _(function () {
                 _this.$el.find('#' + _this.id).autocompTree({
-                    wsUrl: _this.wsUrl + '/ThesaurusREADServices.svc/json',
+                    wsUrl: _this.wsUrl ,
                     webservices: 'fastInitForCompleteTree',
                     language: { hasLanguage: true, lng: _this.lng },
                     display: {
@@ -166,7 +166,7 @@ define([
             var erreur;
 
             $.ajax({
-                url: _this.wsUrl + "/ThesaurusReadServices.svc/json/getTRaductionByType",
+                url: _this.wsUrl + "/getTRaductionByType",
                 //timeout: 3000,
                 data: '{ "sInfo" : "' + value + '", "sTypeField" : "' + TypeField + '", "iParentId":"' + _this.startId + '" }',
                 dataType: "json",
@@ -182,7 +182,7 @@ define([
                         if (_this.displayValueName == 'valueTranslated') {
                             translatedValue = data["TTop_Name" + _this.languages[_this.lng.toLowerCase()]];
                         }
-                        _this.$el.find('#' + _this.id).val(translatedValue);
+                        //_this.$el.find('#' + _this.id).val(translatedValue);
                         _this.$el.find('#' + _this.id + '_value').val(data["TTop_FullPath"]);
                     }
 
@@ -216,7 +216,7 @@ define([
 
             _this.isTermError = true;
             //console.log('Validation on edit Value pas vide ');
-            _this.validateAndTranslate(value, false);
+            _this.validateAndTranslate(value, true);
 
 
         },
