@@ -62,6 +62,8 @@ define([
                 this.ValidationRealTime = false;
             }
 
+            var iconFont = options.schema.options.iconFont || 'hidden';
+
             this.validators = options.schema.validators || [];
 
 
@@ -71,7 +73,7 @@ define([
             this.id = options.id;
             var editorAttrs = "";
             
-            this.editable = options.schema.editable;
+            this.editable = options.schema.editable || true;
             if (options.schema.editorAttrs && options.schema.editorAttrs.disabled)  {
                 this.editable = false;
             }
@@ -82,7 +84,8 @@ define([
             var tplValeurs = {
                 inputID: this.id,
                 editorAttrs: editorAttrs,
-                editorClass: options.schema.editorClass
+                editorClass: options.schema.editorClass,
+                iconFont:iconFont
             }
 
             this.template = _.template(this.template, tplValeurs);
@@ -111,29 +114,30 @@ define([
             this.setElement($el);
             var _this = this;
             _(function () {
-                _this.$el.find('#' + _this.id).autocompTree({
-                    wsUrl: _this.wsUrl ,
-                    webservices: 'fastInitForCompleteTree',
-                    language: { hasLanguage: true, lng: _this.lng },
-                    display: {
-                        isDisplayDifferent: true,
-                        suffixeId: '_value',
-                        displayValueName: _this.displayValueName,
-                        storedValueName: _this.storedValueName
-                    },
-                    inputValue: _this.value,
-                    startId: _this.startId,
-                    onInputBlur: function (options) {
-                        var value = _this.$el.find('#' + _this.id + '_value').val();
-                        _this.onEditValidation(value);
-                    },
+                if (_this.editable) {
+                    _this.$el.find('#' + _this.id).autocompTree({
+                        wsUrl: _this.wsUrl,
+                        webservices: 'fastInitForCompleteTree',
+                        language: { hasLanguage: true, lng: _this.lng },
+                        display: {
+                            isDisplayDifferent: true,
+                            suffixeId: '_value',
+                            displayValueName: _this.displayValueName,
+                            storedValueName: _this.storedValueName
+                        },
+                        inputValue: _this.value,
+                        startId: _this.startId,
+                        onInputBlur: function (options) {
+                            var value = _this.$el.find('#' + _this.id + '_value').val();
+                            _this.onEditValidation(value);
+                        },
 
-                    onItemClick: function (options) {
-                        var value = _this.$el.find('#' + _this.id + '_value').val();
-                        _this.onEditValidation(value);
-                    }
-                });
-
+                        onItemClick: function (options) {
+                            var value = _this.$el.find('#' + _this.id + '_value').val();
+                            _this.onEditValidation(value);
+                        }
+                    });
+                }
                 if (_this.translateOnRender) {
                     _this.validateAndTranslate(_this.value, true);
                 }
@@ -168,7 +172,7 @@ define([
             $.ajax({
                 url: _this.wsUrl + "/getTRaductionByType",
                 //timeout: 3000,
-                data: '{ "sInfo" : "' + value + '", "sTypeField" : "' + TypeField + '", "iParentId":"' + _this.startId + '" }',
+                data: '{ "sInfo" : "' + value + '", "sTypeField" : "' + TypeField + '", "iParentId":"' + _this.startId + '",lng:"' + _this.lng + '"  }',
                 dataType: "json",
                 type: "POST",
                 //async:false,
@@ -177,13 +181,14 @@ define([
                     $('#divAutoComp_' + _this.id).removeClass('error');
                     _this.displayErrorMsg(false);
 
-                    var translatedValue = data["TTop_FullPath" + _this.languages[_this.lng.toLowerCase()]];
+                    var translatedValue = data["TTop_FullPathTranslated"];
                     if (isTranslated) {
                         if (_this.displayValueName == 'valueTranslated') {
-                            translatedValue = data["TTop_Name" + _this.languages[_this.lng.toLowerCase()]];
+                            translatedValue = data["TTop_NameTranslated"];
                         }
                         //_this.$el.find('#' + _this.id).val(translatedValue);
                         _this.$el.find('#' + _this.id + '_value').val(data["TTop_FullPath"]);
+                        _this.$el.find('#' + _this.id).val(translatedValue);
                     }
 
                     _this.displayErrorMsg(false);
@@ -191,6 +196,7 @@ define([
 
                 },
                 error: function (data) {
+                    _this.$el.find('#' + _this.id).val(_this.value);
                     if (_this.editable) {
                         $('#divAutoComp_' + _this.id).addClass('error');
                         _this.displayErrorMsg(true);
