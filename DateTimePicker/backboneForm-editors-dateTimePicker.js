@@ -1,15 +1,50 @@
-define([
-  'underscore',
-  'jquery',
-  'backbone',
-  'backbone_forms',
- 'dateTimePicker',
- 'moment',
-], function(
-  _,$, Backbone, Form,datetimepicker,moment
-){
-  'use strict';
-  return Form.editors.DateTimePickerEditor = Form.editors.Base.extend({
+
+(function (root, factory) {
+
+    // Set up Backbone appropriately for the environment. Start with AMD.
+    if (typeof define === 'function' && define.amd) {
+        console.log('amd');
+        define(['underscore',
+                'jquery',
+                'backbone',
+                'backbone_forms',
+                'dateTimePicker',
+                'moment',
+        ], function (_, $, Backbone, Form, datetimepicker, moment,exports) {
+            // Export global even in AMD case in case this script is loaded with
+            // others that may still expect a global Backbone.
+            var Retour = factory(root, exports, _, $, Backbone, Form, datetimepicker, moment);
+            console.log(Retour) ;
+            return Retour;
+        });
+
+        // Next for Node.js or CommonJS. jQuery may not be needed as a module.
+    } else if (typeof exports !== 'undefined') {
+        console.log('common JS');
+        var $ = require('jquery');
+        var _ = require('underscore');
+        var Backbone = require('backbone');
+        Backbone.$ = $;
+        var Marionette = require('backbone.marionette');
+        require('backbone-forms');
+        var BackboneForm=  Backbone.Form ;
+        /*var brfs = require('brfs')
+        var tpl = brfs('./Templates/NsFormsModule.html');*/
+        var datetimepicker = require('datetimepicker');
+        
+        module.exports = factory(root, exports, _, $, Backbone, Form, datetimepicker, moment);
+        //return Retour ;
+        // Finally, as a browser global.
+    } else {
+        //TODO
+        //root.Backbone = factory(root, {}, root._, (root.jQuery || root.Zepto || root.ender || root.$));
+    }
+
+}(this, function (root, DateTimePickerEditor, _, $, Backbone, Form, datetimepicker, moment) {
+
+
+
+    var Retour =  Form.editors.DateTimePickerEditor = Form.editors.Base.extend({
 
 
     
@@ -80,23 +115,23 @@ define([
                 //value = options.model.get(this.options.key);
                 var val = options.model.get(this.options.key);
                 if (val){
-                  var tab = val.split(" ");
-                  if (tab.length > 1){
-                    value = tab[1];
-                  } else {
-                    value = val;
-                  }
+                    var tab = val.split(" ");
+                    if (tab.length > 1){
+                        value = tab[1];
+                    } else {
+                        value = val;
+                    }
                 }
                 
-              }else {
-                    //console.log(this.format)
-                    //console.log(options.value)
-                    if (options.model) {
-                      value = options.model.get(this.options.key);
-                    }else {
-                      value = '';
-                    }
-              }
+            }else {
+                //console.log(this.format)
+                //console.log(options.value)
+                if (options.model) {
+                    value = options.model.get(this.options.key);
+                }else {
+                    value = '';
+                }
+            }
 
             var $el = $($.trim(this.template({
                 value : value,
@@ -109,22 +144,25 @@ define([
             })));
             this.setElement($el);
             //console.log('**** HIDDEN ************** ', (options.schema.editable != false) ? '' : 'hidden', options.schema.editable);
-			$($el[0]).datetimepicker(_this.datetimepickerOptions);
+            $($el[0]).datetimepicker(_this.datetimepickerOptions);
 
             //tmp solution ? datetimepicker remove the value
-/*            if(this.options){
-                var value = this.options.model.get(this.options.key);
-                $el.find('input').val(value);
-            }*/
+            /*            if(this.options){
+                            var value = this.options.model.get(this.options.key);
+                            $el.find('input').val(value);
+                        }*/
 
             return this;
         },
-        }, {
+    }, {
         // STATICS
-            template: _.template('<div class="input-group date dateTimePicker"'  
-                +'data-editors="Date_"><span class="input-group-addon <%= hidden %>">'
-                +'<span class="<%= iconClass %> "></span></span><input id="<%=inputID%>" '
-                +'name="Date_" class="<%= editorClass %> <%= required %>" type="text" ' 
-                +' value="<%= value %>" <%= editable %> ></div>', null, Form.templateSettings) //data-date-format="DD/MM/YYYY HH:mm:ss" placeholder="jj/mm/aaaa hh:mm:ss"
+        template: _.template('<div class="input-group date dateTimePicker"'  
+            +'data-editors="Date_"><span class="input-group-addon <%= hidden %>">'
+            +'<span class="<%= iconClass %> "></span></span><input id="<%=inputID%>" '
+            +'name="Date_" class="<%= editorClass %> <%= required %>" type="text" ' 
+            +' value="<%= value %>" <%= editable %> ></div>', null, Form.templateSettings) //data-date-format="DD/MM/YYYY HH:mm:ss" placeholder="jj/mm/aaaa hh:mm:ss"
     });
-});
+
+    return Retour;
+
+}));
