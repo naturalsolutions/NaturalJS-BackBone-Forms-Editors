@@ -92,24 +92,28 @@ define([
 
             this.forms.push(form);
 
-            if(!this.defaultRequired){
+            if (!this.defaultRequired) {
+                form.$el.find('fieldset>div').addClass('col-xs-11') ;
                 form.$el.find('fieldset').append('\
-                    <div class="' + this.hidden + ' col-xs-12 control">\
-                        <button type="button" class="btn btn-warning pull-right" id="remove">-</button>\
+                    <div class="' + this.hidden + ' col-xs-1 control">\
+                        <button type="button" class="btn but-grey pull-right" id="remove">X</button>\
                     </div>\
                 ');
-                form.$el.find('button#remove').on('click', function() {
-                  _this.$el.find('#formContainer').find(form.el).remove();
-                  var i = _this.forms.indexOf(form);
-                  if (i > -1) {
-                      _this.forms.splice(i, 1);
-                  }
-                  return;
+                form.$el.find('button#remove').on('click', function () {
+                    _this.$el.find('.formContainer').find(form.el).remove();
+                    var i = _this.forms.indexOf(form);
+                    if (i > -1) {
+                        _this.forms.splice(i, 1);
+                    }
+                    return;
                 });
             }
+            else {
+                form.$el.find('fieldset>div').addClass('col-xs-11');
+            }
 
-
-            this.$el.find('#formContainer').append(form.el);
+            form.$el.find('.formContainer fieldset').removeClass('col-md-12');
+            this.$el.find('.formContainer').append(form.el);
         },
 
         render: function() {
@@ -178,12 +182,9 @@ define([
         }, {
           //STATICS
           template: _.template('\
-            <div class="required nested clearfix">\
-                <button type="button" id="addFormBtn" class="<%= hidden %> btn pull-right">+</button>\
-                <div class="clear"></div>\
-                <div id="formContainer" class="clearfix"></div>\
-                <br />\
-                <button type="button" id="addFormBtn" class="<%= hidden %> btn pull-right">+</button>\
+            <div class="required nested clearfix ">\
+                <div class="formContainer clearfix listofsubforms"></div>\
+                <div class="clearfix"><button type="button" id="addFormBtn" class="<%= hidden %> btn pull-right"> <span>Add</span><i id="I3" class="icon ">+</i></button></div>\
             </div>\
             ', null, Form.templateSettings),
       });
