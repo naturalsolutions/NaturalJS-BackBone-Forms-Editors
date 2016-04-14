@@ -28,9 +28,11 @@
         var Marionette = require('backbone.marionette');
         require('backbone-forms');
         var BackboneForm = Backbone.Form;
+        var Form = BackboneForm ;
+        var moment = require('moment') ;
         /*var brfs = require('brfs')
         var tpl = brfs('./Templates/NsFormsModule.html');*/
-        var datetimepicker = require('datetimepicker');
+        var datetimepicker = require('eonasdan-bootstrap-datetimepicker');
 
         module.exports = factory(root, exports, _, $, Backbone, Form, datetimepicker, moment);
         //return Retour ;
