@@ -33,6 +33,7 @@ define([
             'click #addFormBtn' : 'addEmptyForm',
         },
         initialize: function (options) {
+            var _this = this;
             Form.editors.Base.prototype.initialize.call(this, options);
             if (options.schema.validators.length) {
                 this.defaultRequired = true;
@@ -47,11 +48,11 @@ define([
 
             this.template = options.template || this.constructor.template;
             this.options = options;
-            this.options.schema.fieldClass = 'col-xs-12';
+            //this.options.schema.fieldClass += 'col-xs-12';
             this.forms = [];
             this.disabled = false;
             if ((options.schema.editorAttrs && options.schema.editorAttrs.disabled) || options.schema.editable==false) {
-                this.disabled = true ;
+                this.disabled = true;
             }
             this.hidden = '';
             if(this.disabled) {
@@ -82,8 +83,17 @@ define([
             this.addForm(model);
         },
 
-        addForm: function(model){
+        addForm: function (model) {
             var _this = this;
+            if (this.disabled) {
+                _.each(model.schema, function (value, key, obj) {
+                    //model.schema[key].editable = false;
+                    if (model.schema[key].editorAttrs == null) {
+                        model.schema[key].editorAttrs = {}
+                    }
+                    model.schema[key].editorAttrs.disabled = true;
+                });
+            }
             var form = new Backbone.Form({
                 model: model,
                 fieldsets: model.fieldsets,
