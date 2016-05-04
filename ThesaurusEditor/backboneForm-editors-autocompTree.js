@@ -56,7 +56,7 @@ define([
                 'fr': '',
                 'en': 'En'
             };
-
+            
             this.ValidationRealTime = true;
             if (options.schema.options.ValidationRealTime == false) {
                 this.ValidationRealTime = false;
@@ -127,16 +127,18 @@ define([
                         },
                         inputValue: _this.value,
                         startId: _this.startId,
+                        /*
                         onInputBlur: function (options) {
                             var value = _this.$el.find('#' + _this.id + '_value').val();
                             _this.onEditValidation(value);
                         },
-
+                        */
                         onItemClick: function (options) {
                             var value = _this.$el.find('#' + _this.id + '_value').val();
                             _this.onEditValidation(value);
                         }
                     });
+                   
                 }
                 if (_this.translateOnRender) {
                     _this.validateAndTranslate(_this.value, true);
@@ -145,6 +147,7 @@ define([
                     _this.$el.find('#' + _this.id).blur(function (options) {
                         setTimeout(function (options) {
                             var value = _this.$el.find('#' + _this.id + '_value').val();
+                            _this.toBeTranslated = true ;
                             _this.onEditValidation(value);
                         }, 150);
                     });
@@ -187,8 +190,9 @@ define([
                             translatedValue = data["TTop_NameTranslated"];
                         }
                         //_this.$el.find('#' + _this.id).val(translatedValue);
-                        _this.$el.find('#' + _this.id + '_value').val(data["TTop_FullPath"]);
+                        //_this.$el.find('#' + _this.id + '_value').val(data["TTop_FullPath"]);
                         _this.$el.find('#' + _this.id).val(translatedValue);
+                        _this.$el.find('#' + _this.id + '_value').val(data['TTop_FullPath']);
                     }
 
                     _this.displayErrorMsg(false);
@@ -247,10 +251,13 @@ define([
         },
 
     }, {
-        template: '<div>\
-            <input id="<%=inputID%>" name="<%=inputID%>" class="autocompTree <%=editorClass%>" type="text" placeholder="" <%=editorAttrs%>>\
-            <span id="errorMsg" class="error hidden">Invalid term</span>\
-        </div>',
+        template: '<div ">\
+                        <div class="input-group">\
+                            <span class="input-group-addon <%=iconFont%>" ></span>\
+                            <input id="<%=inputID%>" name="<%=inputID%>" class="autocompTree <%=editorClass%>" type="text" placeholder="" <%=editorAttrs%>>\
+                       </div>\
+                        <span id="errorMsg" class="error hidden">Invalid term</span>\
+                    </div>',
     });
 
 
