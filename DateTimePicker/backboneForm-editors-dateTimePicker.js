@@ -3,6 +3,7 @@
 
     // Set up Backbone appropriately for the environment. Start with AMD.
     if (typeof define === 'function' && define.amd) {
+
         //console.log('amd');
         define(['underscore',
                 'jquery',
@@ -28,9 +29,11 @@
         var Marionette = require('backbone.marionette');
         require('backbone-forms');
         var BackboneForm = Backbone.Form;
+        var Form = BackboneForm ;
+        var moment = require('moment') ;
         /*var brfs = require('brfs')
         var tpl = brfs('./Templates/NsFormsModule.html');*/
-        var datetimepicker = require('datetimepicker');
+        var datetimepicker = require('eonasdan-bootstrap-datetimepicker');
 
         module.exports = factory(root, exports, _, $, Backbone, Form, datetimepicker, moment);
         //return Retour ;
