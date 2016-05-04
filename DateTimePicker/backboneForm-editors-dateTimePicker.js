@@ -3,7 +3,7 @@
 
     // Set up Backbone appropriately for the environment. Start with AMD.
     if (typeof define === 'function' && define.amd) {
-        console.log('amd');
+        //console.log('amd');
         define(['underscore',
                 'jquery',
                 'backbone',
@@ -14,13 +14,13 @@
             // Export global even in AMD case in case this script is loaded with
             // others that may still expect a global Backbone.
             var Retour = factory(root, exports, _, $, Backbone, Form, datetimepicker, moment);
-            console.log(Retour);
+            //console.log(Retour);
             return Retour;
         });
 
         // Next for Node.js or CommonJS. jQuery may not be needed as a module.
     } else if (typeof exports !== 'undefined') {
-        console.log('common JS');
+        //console.log('common JS');
         var $ = require('jquery');
         var _ = require('underscore');
         var Backbone = require('backbone');
@@ -143,7 +143,7 @@
                 iconClass: _this.classIcon
             })));
             this.setElement($el);
-            _this.datetimepickerOptions.debug = true;
+            //_this.datetimepickerOptions.debug = true;
             //console.log('**** HIDDEN ************** ', (options.schema.editable != false) ? '' : 'hidden', options.schema.editable);
             $($el[0]).datetimepicker(_this.datetimepickerOptions);
 
@@ -153,12 +153,12 @@
                 //     firstClick = true ;
                 //     console.log('FirstClick') ;
                 // }) ;
-                console.log('')
+              
 
-                console.log('Contenu', $($el[0]).data('DateTimePicker'));
+               // console.log('Contenu', $($el[0]).data('DateTimePicker'));
                 $($el[0]).on('dp.change', function (e, f) {
 
-                    console.log('CHANGE', e);
+                    //console.log('CHANGE', e);
 
                     if (e.oldDate == null || (e.oldDate.format("MM/DD/YYYY") == e.date.format("MM/DD/YYYY"))) {
                         //console.log('Change Hour') ;
