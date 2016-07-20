@@ -73,6 +73,9 @@ define([
             if (this.schema.editable == false) {
                 this.$el.find('.UploadInForm').attr('style', 'display:none');
             }
+            else {
+                this.$el.find('.UploadInForm').attr('style', 'display:visible');
+            }
             this.displayExistingFiles({ onInit: true });
 
             return this;
