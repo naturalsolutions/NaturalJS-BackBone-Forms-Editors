@@ -76,18 +76,18 @@
                 var link = this.options.schema.options.link.replace('@value', value.replace(this.options.schema.options.valueIgnore, ''));
             }
 
-
-            var $el = $($.trim(this.template({
-                value: value,
-                editorClass: this.options.schema.editorClass,
-                editable: (options.schema.editable != false) ? '' : 'disabled',
-                hidden: (options.schema.editable != false) ? '' : 'hidden',
-                inputID: this.id,
-                iconClass: this.classIcon,
-                link:link
-            })));
-            this.setElement($el);
-            
+            if (value != null && value != '') {
+                var $el = $($.trim(this.template({
+                    value: value,
+                    editorClass: this.options.schema.editorClass,
+                    editable: (options.schema.editable != false) ? '' : 'disabled',
+                    hidden: (options.schema.editable != false) ? '' : 'hidden',
+                    inputID: this.id,
+                    iconClass: this.classIcon,
+                    link: link
+                })));
+                this.setElement($el);
+            }
 
 
 
