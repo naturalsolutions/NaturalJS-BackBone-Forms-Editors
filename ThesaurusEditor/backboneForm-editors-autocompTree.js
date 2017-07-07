@@ -109,6 +109,10 @@ define([
             this.lng = options.schema.options.lng;
             this.displayValueName = options.schema.options.displayValueName || 'fullpathTranslated';
             this.storedValueName = options.schema.options.storedValueName || 'fullpath';
+
+            //todo : tmp safe check, toremove ?
+            if (!this.validators);
+                this.validators = {};
             this.validators.push({ type: 'Thesaurus', startId: this.startId, wsUrl: this.wsUrl,parent:this });
             this.translateOnRender = options.translateOnRender || true;
         },
@@ -128,7 +132,7 @@ define([
             var _this = this;
             _(function () {
                 _this.$el.find('#' + _this.id).autocompTree({
-                    wsUrl: _this.wsUrl + '/ThesaurusREADServices.svc/json',
+                    wsUrl: _this.wsUrl + '',
                     webservices: 'fastInitForCompleteTree',
                     language: { hasLanguage: true, lng: _this.lng },
                     display: {
@@ -162,7 +166,10 @@ define([
             //console.log('validateAndTranslate', value);
             var _this = this;
             
-
+            if (value == null || value == '') {
+                _this.displayErrorMsg(false);
+                return;
+            }
             var TypeField = "FullPath";
             if (value && value.indexOf(">") == -1) {
                 TypeField = 'Name';
@@ -170,7 +177,7 @@ define([
             var erreur;
 
             $.ajax({
-                url: _this.wsUrl + "/ThesaurusReadServices.svc/json/getTRaductionByType",
+                url: _this.wsUrl + "/getTraductionByType",
                 //timeout: 3000,
                 data: '{ "sInfo" : "' + value + '", "sTypeField" : "' + TypeField + '", "iParentId":"' + _this.startId + '" }',
                 dataType: "json",
@@ -208,10 +215,10 @@ define([
             var _this = this;
             //console.log('Validation on edit ', value, 'finvalue');
             //console.log(value);
-            if (value == null || value == '') {
+            /*if (value == null || value == '') {
                 $('#divAutoComp_' + _this.id).removeClass('error');
                 return;
-            }
+            }*/
 
             _this.isTermError = true;
             //console.log('Validation on edit Value pas vide ');

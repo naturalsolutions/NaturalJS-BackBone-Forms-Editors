@@ -3,7 +3,7 @@ define([
   'underscore',
   'backbone',
   'marionette',
-  'backbone-forms',
+  'backbone_forms',
 
   ], function ($, _, Backbone, Marionette, Form, List, tpl) {
 
