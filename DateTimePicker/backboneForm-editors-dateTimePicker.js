@@ -31,7 +31,9 @@ define([
 
         getValue: function() {
             var date= new Date;
-            return this.el.children['Date_'].value
+            if (this.el.children['Date_'])
+                return this.el.children['Date_'].value;
+            return date;
         },
 
         render: function(){
@@ -63,6 +65,6 @@ define([
         },
         }, {
         // STATICS
-            template: _.template('<div class="input-group date dateTimePicker" id="dateTimePicker" data-editors="Date_"><span class="input-group-addon <%= hidden %>"><span class="reneco-calendar reneco"></span></span><input id="c24_Date_" name="Date_" class="<%= editorClass %> <%= required %>" type="text" placeholder="jj/mm/aaaa hh:mm:ss" data-date-format="DD/MM/YYYY HH:mm:ss" value="<%= value %>" <%= editable %> ></div>', null, Form.templateSettings)
+            template: _.template('<div class="input-group date dateTimePicker" id="dateTimePicker" data-editors="Date_"><span class="input-group-addon <%= hidden %>"><span class="reneco-calendar reneco"></span></span><input id="c24_Date_" name="Date_" class="<%= editorClass %> <%= required %>" type="text" placeholder="jj/mm/aaaa hh:mm:ss" data-date-format="DD/MM/YYYY" value="<%= value %>" <%= editable %> ></div>', null, Form.templateSettings)
     });
 });

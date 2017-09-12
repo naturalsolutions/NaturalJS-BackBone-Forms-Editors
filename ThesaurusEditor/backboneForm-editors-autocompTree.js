@@ -49,8 +49,7 @@ define([
             if (!options.parent.isTermError) {
                 return null ;
             }
-            console.log('validateur', 'value',value,'options', options);
-            console.log(options.parent);
+            return null;
             var retour = {
                 type: options.type,
                 message:'' 
@@ -112,7 +111,7 @@ define([
 
             //todo : tmp safe check, toremove ?
             if (!this.validators);
-                this.validators = {};
+                this.validators = [];
             this.validators.push({ type: 'Thesaurus', startId: this.startId, wsUrl: this.wsUrl,parent:this });
             this.translateOnRender = options.translateOnRender || true;
         },
@@ -155,8 +154,6 @@ define([
                             _this.onEditValidation(value);
                         }, 150);
                     });
-
-                    console.log(_this.$el.find('#treeView' + _this.id));
                 }
                 _this.FirstRender = false;
             }).defer();
@@ -213,15 +210,12 @@ define([
         },
         onEditValidation: function (value) {
             var _this = this;
-            //console.log('Validation on edit ', value, 'finvalue');
-            //console.log(value);
             /*if (value == null || value == '') {
                 $('#divAutoComp_' + _this.id).removeClass('error');
                 return;
             }*/
 
             _this.isTermError = true;
-            //console.log('Validation on edit Value pas vide ');
             _this.validateAndTranslate(value, false);
 
            
@@ -229,12 +223,8 @@ define([
 
         displayErrorMsg: function (bool) {
             if (this.editable) {
-                //console.log('boooooool', bool);
                 this.isTermError = bool;
-                //console.log('this.$el', this.$el);
                 if (this.isTermError) {
-
-                    //console.log('Term Error');
                     this.termError = "Invalid term";
                     this.$el.find('#divAutoComp_' + this.id).addClass('error');
                     this.$el.find('#errorMsg').removeClass('hidden');
