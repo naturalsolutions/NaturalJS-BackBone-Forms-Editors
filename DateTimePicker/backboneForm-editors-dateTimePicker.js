@@ -59,9 +59,10 @@ define([
         },
 
         getValue: function() {
-            var date = new Date;
-            var input = this.$el.find('#' + this.id);
-            return this.$el.find('#' + this.id).val();
+            var date= new Date;
+            if (this.el.children['Date_'])
+                return this.el.children['Date_'].value;
+            return date;
         },
 
         render: function(){
@@ -120,10 +121,6 @@ define([
         },
         }, {
         // STATICS
-            template: _.template('<div class="input-group date dateTimePicker"'  
-                +'data-editors="Date_"><span class="input-group-addon <%= hidden %>">'
-                +'<span class="<%= iconClass %> "></span></span><input id="<%=inputID%>" '
-                +'name="Date_" class="<%= editorClass %> <%= required %>" type="text" ' 
-                +' value="<%= value %>" <%= editable %> ></div>', null, Form.templateSettings) //data-date-format="DD/MM/YYYY HH:mm:ss" placeholder="jj/mm/aaaa hh:mm:ss"
+            template: _.template('<div class="input-group date dateTimePicker" id="dateTimePicker" data-editors="Date_"><span class="input-group-addon <%= hidden %>"><span class="reneco-calendar reneco"></span></span><input id="c24_Date_" name="Date_" class="<%= editorClass %> <%= required %>" type="text" placeholder="jj/mm/aaaa hh:mm:ss" data-date-format="DD/MM/YYYY" value="<%= value %>" <%= editable %> ></div>', null, Form.templateSettings)
     });
 });
