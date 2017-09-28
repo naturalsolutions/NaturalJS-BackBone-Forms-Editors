@@ -23,7 +23,7 @@ define([
             }
         },
 
-        initialize: function(options) {
+        initialize: function (options) {
             Form.editors.Base.prototype.initialize.call(this, options);
             this.template = options.template || this.constructor.template;
             this.options = options;
@@ -53,7 +53,18 @@ define([
             })));
             this.setElement($el);
             //console.log('**** HIDDEN ************** ', (options.schema.editable != false) ? '' : 'hidden', options.schema.editable);
-            $($el[0]).datetimepicker();
+            
+
+            var optionsToSet = {};
+
+            if (this.options && this.options.model.attributes.beforeEventDate) {
+                optionsToSet.minDate = new Date(this.options.model.attributes.beforeEventDate);
+            }
+            if (this.options && this.options.model.attributes.afterEventDate) {
+                optionsToSet.maxDate = new Date(this.options.model.attributes.afterEventDate);
+            }
+
+            $($el[0]).datetimepicker(optionsToSet);
 
             //tmp solution ? datetimepicker remove the value
             if(this.options){
