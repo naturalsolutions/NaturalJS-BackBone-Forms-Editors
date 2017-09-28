@@ -1,3 +1,5 @@
+
+
 define([
 	'underscore',
 	'jquery',
@@ -9,50 +11,17 @@ define([
 	_, $, $ui, Backbone, Form, autocompTree
 ) {
 
-    /*
-    Backbone.Form.validators.Thesaurus = function (options) {
-        return function Thesaurus(value) {
-            if (value == '') return ;
-            
-
-            var TypeField = "FullPath";
-                if (value && value.indexOf(">") == -1) {
-                    TypeField = 'Name';
-                }
-            var retour ;
-
-            $.ajax({
-                url: options.wsUrl + "/ThesaurusReadServices.svc/json/getTRaductionByType",
-                timeout: 3000,
-                data: '{ "sInfo" : "' + value + '", "sTypeField" : "' + TypeField + '", "iParentId":"' + options.startId + '" }',
-                dataType: "json",
-                type: "POST",
-                async:false,
-                contentType: "application/json; charset=utf-8",
-                success: function (data) {
-                    retour = null;
-                },
-                error: function (data) {
-                    retour = {
-                            type: options.type,
-                            message: 'Not-Valid Value'
-                            }; 
-                    
-                }
-            });
-            return retour ;
-        };
-    };*/
+   
 
     Backbone.Form.validators.Thesaurus = function (options) {
         return function Thesaurus(value) {
             if (!options.parent.isTermError) {
-                return null ;
+                return null;
             }
             return null;
             var retour = {
                 type: options.type,
-                message:'' 
+                message: ''
             };
 
             return retour;
@@ -80,15 +49,23 @@ define([
         },
 
         initialize: function (options) {
+            Form.editors.Base.prototype.initialize.call(this, options);
             this.FirstRender = true;
             this.languages = {
                 'fr': '',
                 'en': 'En'
             };
+
+            this.ValidationRealTime = true;
+            if (options.schema.options.ValidationRealTime == false) {
+                this.ValidationRealTime = false;
+            }
+
             this.validators = options.schema.validators || [];
 
+
             this.isTermError = false;
-            Form.editors.Base.prototype.initialize.call(this, options);
+            
             this.template = options.template || this.constructor.template;
             this.id = options.id;
             var editorAttrs = "";
@@ -125,7 +102,7 @@ define([
         },
 
         render: function () {
-            
+
             var $el = $(this.template);
             this.setElement($el);
             var _this = this;
@@ -142,6 +119,15 @@ define([
                     },
                     inputValue: _this.value,
                     startId: _this.startId,
+                    onInputBlur: function (options) {
+                        var value = _this.$el.find('#' + _this.id + '_value').val();
+                        _this.onEditValidation(value);
+                    },
+
+                    onItemClick: function (options) {
+                        var value = _this.$el.find('#' + _this.id + '_value').val();
+                        _this.onEditValidation(value);
+                    }
                 });
 
                 if (_this.translateOnRender) {
@@ -218,7 +204,7 @@ define([
             _this.isTermError = true;
             _this.validateAndTranslate(value, false);
 
-           
+
         },
 
         displayErrorMsg: function (bool) {

@@ -7,26 +7,52 @@ define([
 
   ], function ($, _, Backbone, Marionette, Form, List, tpl) {
 
-    'use strict';
+      'use strict';
+
+      Backbone.Form.validators.ListOfSubFormsValidator = function (options) {
+          return function subforms(value) {
+              var errors = [];
+              console.log(this,options,value)
+              for (var i = 0; i < options.editor.forms.length; i++) {
+                  var validation = options.editor.forms[i].validate();
+                  if (validation != null) {
+                      errors.push(validation);
+                  }
+              }
+              if (errors.length > 0) {
+                  return errors;
+              }
+              else {
+                  return null;
+              }
+          };
+      };
+
     return Form.editors.ListOfSubForms = Form.editors.Base.extend({
         events: {
             'click #addFormBtn' : 'addEmptyForm',
         },
-        initialize: function(options) {
+        initialize: function (options) {
+            Form.editors.Base.prototype.initialize.call(this, options);
             if (options.schema.validators.length) {
                 this.defaultRequired = true;
             } else {
                 options.schema.validators.push('required');
                 this.defaultRequired = false;
             }
-
-            Form.editors.Base.prototype.initialize.call(this, options);
+            this.validators=  options.schema.validators = [];
+            
+            this.validators.push({ type: 'ListOfSubFormsValidator', editor: this });
+            
 
             this.template = options.template || this.constructor.template;
             this.options = options;
             this.options.schema.fieldClass = 'col-xs-12';
             this.forms = [];
-            this.disabled = options.schema.editorAttrs.disabled;
+            this.disabled = false;
+            if ((options.schema.editorAttrs && options.schema.editorAttrs.disabled) || options.schema.editable==false) {
+                this.disabled = true ;
+            }
             this.hidden = '';
             if(this.disabled) {
                 this.hidden = 'hidden';
@@ -96,15 +122,16 @@ define([
             })));
             this.setElement($el);
             //init forms
-            var model = new Backbone.Model();
-            model.schema = this.options.schema.subschema;
-            model.fieldsets = this.options.schema.fieldsets;
+           
             var key = this.options.key;
             var data = this.options.model.attributes[key];
 
             if (data) {
                 if (data.length) {
                     for (var i = 0; i < data.length; i++) {
+                        var model = new Backbone.Model();
+                        model.schema = this.options.schema.subschema;
+                        model.fieldsets = this.options.schema.fieldsets;
                         model.attributes = data[i];
                         this.addForm(model);
                         this.defaultRequired = false;

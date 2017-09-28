@@ -147,9 +147,19 @@ define([
                 // OK c'est bien liè à mon editeur
 
                 var link = document.createElement('a');
+                link.classList.add('DowloadLinka');
+                
                 link.download = $(eventType.currentTarget).attr('getUrl');
                 link.href = $(eventType.currentTarget).attr('getUrl');
-                link.click();
+                link.onclick = function () {
+                    //this.parentElement.removeChild(this);
+                    var href = $(link).attr('href');
+                    window.location.href = link;
+                    _this.$el.find('.DowloadLinka').remove();
+                };
+               this.$el.append(link);
+               link.click();
+                
             }
         },
         deleteFile: function (eventType) {
