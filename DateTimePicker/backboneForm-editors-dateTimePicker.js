@@ -109,12 +109,14 @@ define([
             })));
             this.setElement($el);
 
+            /* TODO IS BUGGED
             if (this.options && this.options.model.attributes.beforeEventDate) {
                 _this.datetimepickerOptions.minDate = new Date(this.options.model.attributes.beforeEventDate);
             }
             if (this.options && this.options.model.attributes.afterEventDate) {
                 _this.datetimepickerOptions.maxDate = new Date(this.options.model.attributes.afterEventDate);
             }
+            */
 
 			$($el[0]).datetimepicker(_this.datetimepickerOptions);
 
