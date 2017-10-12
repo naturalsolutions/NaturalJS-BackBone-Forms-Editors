@@ -121,7 +121,6 @@
 						},
 						//Permet si l'arbre et en mode filter d'afficher les enfants des termes filtrés -> submatch
 						renderNode: function (event, data) {
-							console.log('render');
 
 							var node = data.node;
 							if (data.tree.options.hideExpand.isHide) {
@@ -153,7 +152,6 @@
 						activate: function (event, data) {
 							var tree = $("#treeView" + $me.attr("id")).fancytree('getTree');
 							if (parametres.display.isDisplayDifferent) {
-								console.log(data.node.data);
 								$me.val(data.node.data[parametres.display.displayValueName]);
 								$('[name=' + $me.attr('name') + parametres.display.suffixeId + ']').val(data.node.data[parametres.display.storedValueName]);
 								$("#treeView" + $me.attr("id")).css('display', 'none');
@@ -161,7 +159,6 @@
 								//On désactive le pseudo blur afin qu'il ne s'éxécute plus si l'arbre a disparu et que le vrai focus n'est plus l'input
 								//$(document).undelegate();
 							} else {
-								console.log(data.node.data[parametres.display.displayValueName]);
 								$me.val(data.node.data[parametres.display.displayValueName]);
 								$("#treeView" + $me.attr("id")).css('display', 'none');
 								tree.activateKey(false);
@@ -180,7 +177,6 @@
 
 
 					$me.focus(function () {
-						console.log('focus');
 
 						$("div[id^=treeView]").each(function () {
 							$(this).css('display', 'none');
