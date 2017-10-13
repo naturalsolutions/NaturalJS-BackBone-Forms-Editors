@@ -1,4 +1,3 @@
-﻿
 (function (root, factory) {
 
     // Set up Backbone appropriately for the environment. Start with AMD.
@@ -43,15 +42,9 @@
 
 }(this, function (root, DateTimePickerEditor, _, $, Backbone, Form) {
 
-
-
     var Retour = Form.editors.LinkEditor = Form.editors.Base.extend({
 
-
-
         previousValue: '',
-
-       
 
         initialize: function (options) {
             Form.editors.Base.prototype.initialize.call(this, options);
@@ -88,9 +81,6 @@
                 })));
                 this.setElement($el);
             }
-
-
-
             return this;
         },
     }, {

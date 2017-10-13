@@ -64,7 +64,10 @@ define([
             this.hasNestedForm = true;
 
             var key = this.options.key;
-            //this.defaultValue = this.options.model.schema[key].defaultValue['FK_ProtocoleType'];
+            if (this.options.model.schema[key].defaultValue)
+                this.defaultValue = this.options.model.schema[key].defaultValue['FK_ProtocoleType'];
+            else
+                this.defaultValue = 0;
         },
 
         //removeForm

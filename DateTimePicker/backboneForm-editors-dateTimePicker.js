@@ -4,7 +4,7 @@
     // Set up Backbone appropriately for the environment. Start with AMD.
     if (typeof define === 'function' && define.amd) {
 
-        //console.log('amd');
+<<<<<<< HEAD
         define(['underscore',
                 'jquery',
                 'backbone',
@@ -12,16 +12,10 @@
                 'dateTimePicker',
                 'moment',
         ], function (_, $, Backbone, Form, datetimepicker, moment, exports) {
-            // Export global even in AMD case in case this script is loaded with
-            // others that may still expect a global Backbone.
             var Retour = factory(root, exports, _, $, Backbone, Form, datetimepicker, moment);
-            //console.log(Retour);
             return Retour;
         });
-
-        // Next for Node.js or CommonJS. jQuery may not be needed as a module.
     } else if (typeof exports !== 'undefined') {
-        //console.log('common JS');
         var $ = require('jquery');
         var _ = require('underscore');
         var Backbone = require('backbone');
@@ -31,13 +25,9 @@
         var BackboneForm = Backbone.Form;
         var Form = BackboneForm ;
         var moment = require('moment') ;
-        /*var brfs = require('brfs')
-        var tpl = brfs('./Templates/NsFormsModule.html');*/
         var datetimepicker = require('eonasdan-bootstrap-datetimepicker');
 
         module.exports = factory(root, exports, _, $, Backbone, Form, datetimepicker, moment);
-        //return Retour ;
-        // Finally, as a browser global.
     } else {
         //TODO
         //root.Backbone = factory(root, {}, root._, (root.jQuery || root.Zepto || root.ender || root.$));
@@ -81,7 +71,7 @@
             } else {
                 this.format = "DD/MM/YYYY HH:mm:ss";
             }
-            // datetimepicker options
+
             this.datetimepickerOptions = { format: this.format };
             if (this.defaultDate) {
                 this.datetimepickerOptions.defaultDate = moment(this.defaultDate, this.format);
@@ -94,13 +84,19 @@
             if (this.format && (this.format.toLowerCase() == 'hh:mm:ss')) {
                 this.classIcon = 'glyphicon-time glyphicon';
             }
-            //console.log(this.format);
         },
 
         getValue: function () {
+            /* TOCHECK
             var date = new Date;
             var input = this.$el.find('#' + this.id);
             return this.$el.find('#' + this.id).val();
+            */
+
+            var date= new Date;
+            if (this.el.children['Date_'])
+                return this.el.children['Date_'].value;
+            return date;
         },
 
         render: function () {
@@ -115,7 +111,6 @@
             }
 
             if (options.model && this.format && this.format.toLowerCase() == 'hh:mm:ss') {
-                //value = options.model.get(this.options.key);
                 var val = options.model.get(this.options.key);
                 if (val) {
                     var tab = val.split(" ");
@@ -127,8 +122,6 @@
                 }
 
             } else {
-                //console.log(this.format)
-                //console.log(options.value)
                 if (options.model) {
                     value = options.model.get(this.options.key);
                 } else {
@@ -146,38 +139,32 @@
                 iconClass: _this.classIcon
             })));
             this.setElement($el);
-            //_this.datetimepickerOptions.debug = true;
-            //console.log('**** HIDDEN ************** ', (options.schema.editable != false) ? '' : 'hidden', options.schema.editable);
-            $($el[0]).datetimepicker(_this.datetimepickerOptions);
+            
 
             if (_this.options.schema.options.closeOnClick == null || _this.options.schema.options.closeOnClick) {
-                // var firstClick = true ;
-                // $($el[0]).on('dp.show',function() {
-                //     firstClick = true ;
-                //     console.log('FirstClick') ;
-                // }) ;
-              
-
-               // console.log('Contenu', $($el[0]).data('DateTimePicker'));
+                
                 $($el[0]).on('dp.change', function (e, f) {
 
-                    //console.log('CHANGE', e);
-
                     if (e.oldDate == null || (e.oldDate.format("MM/DD/YYYY") == e.date.format("MM/DD/YYYY"))) {
-                        //console.log('Change Hour') ;
                     }
                     else {
-                        //console.log('Change Date') ;
                         $(e.target).data('DateTimePicker').hide();
                     }
-                    //
-                    //     }
-                    // },0);
                 });
 
             }
 
+            /* TODO IS BUGGED
+            if (this.options && this.options.model.attributes.beforeEventDate) {
+                _this.datetimepickerOptions.minDate = new Date(this.options.model.attributes.beforeEventDate);
+            }
+            if (this.options && this.options.model.attributes.afterEventDate) {
+                _this.datetimepickerOptions.maxDate = new Date(this.options.model.attributes.afterEventDate);
+            }
+            */
 
+            $($el[0]).datetimepicker(_this.datetimepickerOptions);
+            
             //tmp solution ? datetimepicker remove the value
             /*            if(this.options){
                             var value = this.options.model.get(this.options.key);
@@ -188,11 +175,16 @@
         },
     }, {
         // STATICS
+
+        /* TOCHECK
         template: _.template('<div class="input-group date dateTimePicker"'
             + 'data-editors="Date_"><span class="input-group-addon <%= hidden %>">'
             + '<span class="<%= iconClass %> "></span></span><input id="<%=inputID%>" '
             + 'name="Date_" class="<%= editorClass %> <%= required %>" type="text" '
             + ' value="<%= value %>" <%= editable %> ></div>', null, Form.templateSettings) //data-date-format="DD/MM/YYYY HH:mm:ss" placeholder="jj/mm/aaaa hh:mm:ss"
+        */
+
+        template: _.template('<div class="input-group date dateTimePicker" id="dateTimePicker" data-editors="Date_"><span class="input-group-addon <%= hidden %>"><span class="reneco-calendar reneco"></span></span><input id="c24_Date_" name="Date_" class="<%= editorClass %> <%= required %>" type="text" placeholder="jj/mm/aaaa hh:mm:ss" data-date-format="DD/MM/YYYY" value="<%= value %>" <%= editable %> ></div>', null, Form.templateSettings)
     });
 
     return Retour;
