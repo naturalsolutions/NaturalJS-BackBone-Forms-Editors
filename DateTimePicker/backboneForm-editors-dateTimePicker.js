@@ -4,7 +4,6 @@
     // Set up Backbone appropriately for the environment. Start with AMD.
     if (typeof define === 'function' && define.amd) {
 
-<<<<<<< HEAD
         define(['underscore',
                 'jquery',
                 'backbone',
