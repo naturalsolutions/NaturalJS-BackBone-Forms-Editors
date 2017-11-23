@@ -153,14 +153,20 @@
 
             }
 
-            /* TODO IS BUGGED
+            /*
+            console.log("I WANT TO SETUP FOR THE DATE :", "mindate =",
+                this.options.model.attributes.beforeEventDate, new Date(this.options.model.attributes.beforeEventDate),
+                "maxdate =", this.options.model.attributes.afterEventDate, new Date(this.options.model.attributes.afterEventDate));
+                */
             if (this.options && this.options.model.attributes.beforeEventDate) {
                 _this.datetimepickerOptions.minDate = new Date(this.options.model.attributes.beforeEventDate);
             }
             if (this.options && this.options.model.attributes.afterEventDate) {
                 _this.datetimepickerOptions.maxDate = new Date(this.options.model.attributes.afterEventDate);
             }
-            */
+            if (_this.datetimepickerOptions.defaultDate < _this.datetimepickerOptions.minDate ||
+                _this.datetimepickerOptions.defaultDate > _this.datetimepickerOptions.maxDate)
+                _this.datetimepickerOptions.defaultDate = _this.datetimepickerOptions.maxDate;
 
             $($el[0]).datetimepicker(_this.datetimepickerOptions);
             

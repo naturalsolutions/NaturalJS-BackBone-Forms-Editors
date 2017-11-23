@@ -147,8 +147,8 @@ define([
             var _this = this;
 
             if (eventType.currentTarget.id == ('FileGet_' + this.id)) {
-                // OK c'est bien liè à mon editeur
 
+                // OK c'est bien liè à mon editeur
                 var link = document.createElement('a');
                 link.classList.add('DowloadLinka');
                 

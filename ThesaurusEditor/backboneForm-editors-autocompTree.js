@@ -95,7 +95,7 @@ define([
             this.storedValueName = options.schema.options.storedValueName || 'fullpath';
 
             //todo : tmp safe check, toremove ?
-            if (!this.validators);
+            if (!this.validators)
                 this.validators = [];
             this.validators.push({ type: 'Thesaurus', startId: this.startId, wsUrl: this.wsUrl,parent:this });
             this.translateOnRender = options.translateOnRender || true;
