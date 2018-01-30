@@ -115,30 +115,28 @@ define([
             this.setElement($el);
             var _this = this;
             _(function () {
-                if (_this.editable) {
-                    _this.$el.find('#' + _this.id).autocompTree({
-                        wsUrl: _this.wsUrl,
-                        webservices: 'fastInitForCompleteTree',
-                        language: { hasLanguage: true, lng: _this.lng },
-                        display: {
-                            isDisplayDifferent: true,
-                            suffixeId: '_value',
-                            displayValueName: _this.displayValueName,
-                            storedValueName: _this.storedValueName
-                        },
-                        inputValue: _this.value,
-                        startId: _this.startId,
-                        onInputBlur: function (options) {
-                            var value = _this.$el.find('#' + _this.id + '_value').val();
-                            _this.onEditValidation(value);
-                        },
-                        onItemClick: function (options) {
-                            var value = _this.$el.find('#' + _this.id + '_value').val();
-                            _this.onEditValidation(value);
-                        }
-                    });
+                _this.$el.find('#' + _this.id).autocompTree({
+                    wsUrl: _this.wsUrl,
+                    webservices: 'fastInitForCompleteTree',
+                    language: { hasLanguage: true, lng: _this.lng },
+                    display: {
+                        isDisplayDifferent: true,
+                        suffixeId: '_value',
+                        displayValueName: _this.displayValueName,
+                        storedValueName: _this.storedValueName
+                    },
+                    inputValue: _this.value,
+                    startId: _this.startId,
+                    onInputBlur: function (options) {
+                        var value = _this.$el.find('#' + _this.id + '_value').val();
+                        _this.onEditValidation(value);
+                    },
+                    onItemClick: function (options) {
+                        var value = _this.$el.find('#' + _this.id + '_value').val();
+                        _this.onEditValidation(value);
+                    }
+                });
                    
-                }
                 if (_this.translateOnRender) {
                     _this.validateAndTranslate(_this.value, true);
                 }

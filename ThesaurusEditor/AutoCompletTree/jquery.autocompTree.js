@@ -61,13 +61,12 @@
 			//Fonction s'éxécutant après l'initialisation de l'objet autocompTree
 			onInputInitialize: '',
 			//Enregistrement de l'item en elle même
-			thisItem: $(this)
+			thisItem: $(this),
 		}
 
 		var methods = {
 			init: function (parametres) {                
 				//Fusion des paramètres envoyer avec les params par defaut
-
 				if (parametres) {
 					var parametres = $.extend(defauts, parametres);
 				};
@@ -104,6 +103,7 @@
 						extensions: ["filter"],
 						autoActivate: false,
 						keyboard: true,
+                        renderCountdown: 2,
 						filter: {
 							mode: "hide"
 						},
@@ -121,6 +121,12 @@
 						},
 						//Permet si l'arbre et en mode filter d'afficher les enfants des termes filtrés -> submatch
 						renderNode: function (event, data) {
+						    if (this.options.renderCountdown > 0)
+						    {
+                                if (this.options.renderCountdown == 1)
+                                    this.options.setupDefault(data);
+                                this.options.renderCountdown--;
+						    }
 
 							var node = data.node;
 							if (data.tree.options.hideExpand.isHide) {
@@ -171,6 +177,23 @@
 									throw ('An error occured during onItemClick -> ' + e);
 								}
 							}
+						},
+						setupDefault: function (data) {
+						    if ($me.val().length == 0 &&
+                                data.tree.rootNode.children.length <= 1)
+						    {
+						        if (data.tree.data.key != "0")
+						        {
+						            $me.val(data.tree.data.fullpathTranslated);
+						            $("#" + $me.attr('id') + parametres.display.suffixeId).val(data.tree.data.fullpath);
+						        }
+						        else
+						        {
+						            $me.val(data.tree.rootNode.children[0].data.fullpathTranslated);
+						            $("#" + $me.attr('id') + parametres.display.suffixeId).val(
+                                        data.tree.rootNode.children[0].data.fullpath);
+						        }
+						    }
 						}
 					});
 					//Permet l'affichage du treeview au focus sur l'input
