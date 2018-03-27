@@ -12,7 +12,6 @@ define([
     Backbone.Form.validators.ListOfSubFormsValidator = function (options) {
         return function subforms(value) {
             var errors = [];
-            //console.log(this,options,value)
             for (var i = 0; i < options.editor.forms.length; i++) {
                 var validation = options.editor.forms[i].validate();
                 if (validation != null) {

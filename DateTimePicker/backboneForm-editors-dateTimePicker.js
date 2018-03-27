@@ -154,7 +154,6 @@
             }
 
             /*
-            console.log("I WANT TO SETUP FOR THE DATE :", "mindate =",
                 this.options.model.attributes.beforeEventDate, new Date(this.options.model.attributes.beforeEventDate),
                 "maxdate =", this.options.model.attributes.afterEventDate, new Date(this.options.model.attributes.afterEventDate));
                 */

@@ -154,7 +154,6 @@ define([
             return this;
         },
         validateAndTranslate: function (value, isTranslated) {
-            //console.log('validateAndTranslate', value);
             var _this = this;
             
             if (value == null || value == '') {
@@ -214,7 +213,6 @@ define([
             }*/
 
             _this.isTermError = true;
-            //console.log('Validation on edit Value pas vide ');
             _this.validateAndTranslate(value, true);
 
             // TOCHECK _this.validateAndTranslate(value, false);

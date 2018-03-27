@@ -2,8 +2,6 @@
 
     // Set up Backbone appropriately for the environment. Start with AMD.
     if (typeof define === 'function' && define.amd) {
-
-        //console.log('amd');
         define(['underscore',
                 'jquery',
                 'backbone',
@@ -12,7 +10,6 @@
             // Export global even in AMD case in case this script is loaded with
             // others that may still expect a global Backbone.
             var Retour = factory(root, exports, _, $, Backbone, Form );
-            //console.log(Retour);
             return Retour;
         });
 
@@ -51,8 +48,6 @@
             this.template = options.template || this.constructor.template;
             this.options = options;
             this.id = options.id;
-            
-            //console.log(this.format);
         },
 
         getValue: function () {
@@ -64,7 +59,6 @@
         render: function () {
             var options = this.options;
             var value = this.options.model.get(this.options.key);
-            console.log(this.options.schema.options);
             if (value != null && this.options.schema.options.link != null && this.options.schema.options.valueIgnore) {
                 var link = this.options.schema.options.link.replace('@value', value.replace(this.options.schema.options.valueIgnore, ''));
             }

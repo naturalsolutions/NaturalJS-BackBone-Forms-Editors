@@ -85,7 +85,8 @@
 					var htmlInsert = '';
 					//Si isDisplayDifferent = true on crée un input hidden afin de stocker la valeur 
 					if (parametres.display.isDisplayDifferent) {
-						htmlInsert = '<input type="hidden" id="' + $me.attr("name") + parametres.display.suffixeId + '" name="' + $me.attr("name") + parametres.display.suffixeId + '" runat="server" enabled="true"/>'
+					    htmlInsert = '<input class="hidden_tree" type="hidden" id="' + $me.attr("name") + parametres.display.suffixeId +
+                            '" name="' + $me.attr("name") + parametres.display.suffixeId + '" runat="server" enabled="true"/>'
 					}
 					//Div qui sera le conteneur du treeview
 					htmlInsert += '<div class="fancytreeview" id="treeView' + $me.attr('id') + '" style="display:none"></div>';
@@ -95,9 +96,6 @@
 					$me.val(parametres.inputValue);
 
 					//Initialisation de l'arbre
-					//console.log($('#treeView' + $me.attr("id")));
-					//console.log(parametres.webservices);
-					//console.log(dataToSend);
 					$('#treeView' + $me.attr("id")).fancytree({
 						debugLevel: 0,
 						extensions: ["filter"],
@@ -295,7 +293,6 @@
 				var tree = $("#treeView" + _self.attr('id')).fancytree('getTree');
 				if (source) {
 					//Possibilité de modifier la source de l'arbre
-					console.log(source);
 				}
 				tree.reload();
 				return tree;

@@ -182,7 +182,6 @@ define([
                                     url: $(eventType.currentTarget).attr('delUrl'),
                                     type: 'DELETE',
                                 }).success(function (data) {
-                                    console.log('deleted');
                                     _this.existingFiles = _.filter(_this.existingFiles, function (n) {
                                         return n.FileId != fileid;
                                     })
@@ -191,13 +190,9 @@ define([
 
                             }
                         });
-
-			//console.log(eventType.currentTarget);
         },
         testFile: function (eventType) {
             var re = new RegExp(/.[a-zA-Z]+$/);
-            console.log($('#input_' + this.id)[0]);
-            //console.log($('#' + this.id).name);
             var ext = $('#input_' + this.id)[0].files[0].name.toLowerCase().match(re);
             if (this.options.schema.options.extensions) {
                 if (this.options.schema.options.extensions.indexOf(ext[0]) == -1) {
