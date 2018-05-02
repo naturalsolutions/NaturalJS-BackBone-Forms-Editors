@@ -40,7 +40,7 @@ define([
             if (options.schema.validators.length) {
                 this.defaultRequired = true;
             } else {
-                options.schema.validators.push('required');
+                //options.schema.validators.push('required');
                 this.defaultRequired = false;
             }
             this.validators = options.schema.validators = [];
@@ -49,6 +49,11 @@ define([
 
 
             this.template = options.template || this.constructor.template;
+            var $el = $($.trim(this.template({
+                hidden: this.hidden
+            })));
+
+            console.log("444444", $el, $el.find("#addFormBtn"));
             this.options = options;
             //this.options.schema.fieldClass += 'col-xs-12';
             this.forms = [];
@@ -80,17 +85,16 @@ define([
 
             model.schema = this.options.schema.subschema;
             model.fieldsets = this.options.schema.fieldsets;
-            //bug on the FK proto Type
 
-            /*            if(this.defaultValue){
-                            model.attributes['FK_ProtocoleType'] = this.defaultValue;
-                        }
-            */
+            console.log("5555555555555555", this, model);
+            var canedit = true;
+            if (model.fieldsets)
+                canedit = false;
 
-            this.addForm(model);
+            var form = this.addForm(model, canedit);
         },
 
-        addForm: function (model) {
+        addForm: function (model, canedit) {
             var _this = this;
             if (this.disabled) {
                 _.each(model.schema, function (value, key, obj) {
@@ -101,6 +105,7 @@ define([
                     model.schema[key].editorAttrs.disabled = true;
                 });
             }
+
             var form = new Backbone.Form({
                 model: model,
                 fieldsets: model.fieldsets,
@@ -109,10 +114,9 @@ define([
 
             this.forms.push(form);
 
-            if (!this.defaultRequired) {
-                //form.$el.find('fieldset>div').addClass('col-xs-11') ;
+            if ((canedit && (!this.defaultRequired || this.forms.length != 1))) {
                 form.$el.find('fieldset').append('\
-                    <div class="' + this.hidden + ' col-md-1 control">\
+                    <div class="' + this.hidden + ' col-md-1 control delsubformline">\
                         <button type="button" class="btn but-grey pull-right" id="remove">X</button>\
                     </div>\
                 ');
@@ -128,6 +132,22 @@ define([
 
             // form.$el.find('.formContainer fieldset').removeClass('col-md-12');
             this.$el.find('.formContainer').append(form.el);
+
+            if (canedit)
+                $(form.el).find(".form-control").removeClass("subFormCreateOnly");
+
+            var itemsize = Math.floor(12 / Object.keys(model.schema).length);
+
+            //console.log("88888 itemsize", model.schema, Object.keys(model.schema).length, itemsize);
+
+            $.each(model.schema, function (index, value) {
+                console.log(value, "label[for='" + model.cid + "_" + value.name + "']",
+                    $("label[for='" + model.cid + "_" + value.name + "']"),
+                    $("label[for='" + model.cid + "_" + value.name + "']").parent());
+                $("label[for='" + model.cid + "_" + value.name + "']").parent().addClass("col-xs-" + itemsize);
+            });
+
+            return form;
         },
 
         render: function () {
@@ -139,19 +159,19 @@ define([
             //init forms
 
             var key = this.options.key;
-            var data = this.options.model.attributes[key];
+            var data = {};
+            if (this.options.model.attributes[key])
+                data = JSON.parse(this.options.model.attributes[key]);
 
-            if (data) {
-                if (data.length) {
-                    for (var i = 0; i < data.length; i++) {
-                        var model = new Backbone.Model();
-                        model.schema = this.options.schema.subschema;
-                        model.fieldsets = this.options.schema.fieldsets;
-                        model.attributes = data[i];
-                        this.addForm(model);
-                        this.defaultRequired = false;
-                    };
-                }
+            if (data.length) {
+                for (var i = 0; i < data.length; i++) {
+                    var model = new Backbone.Model();
+                    model.schema = this.options.schema.subschema;
+                    model.fieldsets = this.options.schema.fieldsets;
+                    model.attributes = data[i];
+                    this.addForm(model);
+                    this.defaultRequired = false;
+                };
             } else {
                 if (this.defaultRequired) {
                     this.addEmptyForm();

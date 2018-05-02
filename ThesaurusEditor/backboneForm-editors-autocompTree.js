@@ -126,7 +126,8 @@ define([
                         storedValueName: _this.storedValueName
                     },
                     inputValue: _this.value,
-                    startId: _this.startId,
+                    startId: _this.startId
+                    /* TODO : REMOVED AS A TEST AS THOSE EVENTS USED TO SCREW UP THE PERFS,
                     onInputBlur: function (options) {
                         var value = _this.$el.find('#' + _this.id + '_value').val();
                         _this.onEditValidation(value);
@@ -134,7 +135,7 @@ define([
                     onItemClick: function (options) {
                         var value = _this.$el.find('#' + _this.id + '_value').val();
                         _this.onEditValidation(value);
-                    }
+                    }*/
                 });
                    
                 if (_this.translateOnRender) {
