@@ -53,7 +53,6 @@ define([
                 hidden: this.hidden
             })));
 
-            console.log("444444", $el, $el.find("#addFormBtn"));
             this.options = options;
             //this.options.schema.fieldClass += 'col-xs-12';
             this.forms = [];
@@ -86,7 +85,6 @@ define([
             model.schema = this.options.schema.subschema;
             model.fieldsets = this.options.schema.fieldsets;
 
-            console.log("5555555555555555", this, model);
             var canedit = true;
             if (model.fieldsets)
                 canedit = false;
@@ -130,6 +128,7 @@ define([
                 });
             }
 
+            form.$el.addClass("subformArea");
             // form.$el.find('.formContainer fieldset').removeClass('col-md-12');
             this.$el.find('.formContainer').append(form.el);
 
@@ -138,13 +137,75 @@ define([
 
             var itemsize = Math.floor(12 / Object.keys(model.schema).length);
 
-            //console.log("88888 itemsize", model.schema, Object.keys(model.schema).length, itemsize);
-
             $.each(model.schema, function (index, value) {
-                console.log(value, "label[for='" + model.cid + "_" + value.name + "']",
-                    $("label[for='" + model.cid + "_" + value.name + "']"),
-                    $("label[for='" + model.cid + "_" + value.name + "']").parent());
-                $("label[for='" + model.cid + "_" + value.name + "']").parent().addClass("col-xs-" + itemsize);
+                var strRef = "label[for='" + model.cid + "_" + value.name.toLowerCase() + "']";
+
+                $(strRef).parent().addClass("col-xs-6");
+                //$("label[for='" + model.cid + "_" + value.name.toLowerCase() + "']").parent().addClass("col-xs-" + itemsize);
+
+                if (value.editorClass.indexOf("HiddenInput") !== -1)
+                    $(strRef).parent().addClass("HiddenInputParent");
+                if (value.editorClass.indexOf("ReadOnlyInput") !== -1)
+                    $(strRef).parent().addClass("ReadOnlyInputParent");
+                if (value.validators && value.validators[0] == "required")
+                {
+                    $(strRef).addClass('required');
+                }
+
+                var element = $(".formModeEdit [name='" + value.name + "']:last");
+
+                // TODO TMP : COPIED FROM DEFAULT VALUE SETUP ON FILE NSFORMSMODULE.JS
+                switch (value.type.toLowerCase()) {
+                    case "text":
+                        var mydefaultValue = "";
+                        if (element.val() == "") {
+                            mydefaultValue = value.defaultValue;
+                            if ((mydefaultValue == null || mydefaultValue == "")
+                                && value.options && value.options.defaultValue)
+                                mydefaultValue = value.options.defaultValue
+                            element.val(mydefaultValue);
+                        }
+
+                        break;
+
+                    case "select":
+                        var mydefaultValue = "";
+                        if ((element.val() == "" || element.val() == null) && value.options && value.options.length > 0) {
+
+                            var foundselected = false;
+                            $.each(value.options, function (eachindex, eachvalue) {
+                                if (!foundselected && eachvalue.selected
+                                    && eachvalue.selected == "selected") {
+                                    foundselected = true;
+                                    mydefaultValue = eachvalue.val;
+                                }
+                            });
+
+                            if (foundselected)
+                                element.val(mydefaultValue);
+                        }
+
+                        break;
+
+                    case "checkbox":
+
+                        if (value.options && value.options.defaultValue) {
+                            element.prop('checked', true);
+                        }
+
+                        break;
+
+                        //TODO FIND A WAY TO APPLY ONLY ON CREATE, NOT ON EDIT AND IF DEFAULT VALUE IS NOT FORCED AT 0
+                    case "number":
+                        if (value.options && value.options.defaultValue) {
+                            if (element.val() == 0)
+                                element.val(value.options.defaultValue);
+                        }
+                        else if (element.val() == 0) {
+                            element.val("");
+                        }
+                        break;
+                }
             });
 
             return form;
