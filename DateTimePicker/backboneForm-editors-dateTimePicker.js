@@ -153,19 +153,30 @@
 
             }
 
+            /******* THIS PART SHOULD BE REMOVED SOON [START] *******/
             /*
                 this.options.model.attributes.beforeEventDate, new Date(this.options.model.attributes.beforeEventDate),
                 "maxdate =", this.options.model.attributes.afterEventDate, new Date(this.options.model.attributes.afterEventDate));
                 */
             if (this.options && this.options.model.attributes.beforeEventDate) {
-                _this.datetimepickerOptions.minDate = new Date(this.options.model.attributes.beforeEventDate);
+                //_this.datetimepickerOptions.minDate = new Date(this.options.model.attributes.beforeEventDate);
             }
             if (this.options && this.options.model.attributes.afterEventDate) {
-                _this.datetimepickerOptions.maxDate = new Date(this.options.model.attributes.afterEventDate);
+                //_this.datetimepickerOptions.maxDate = new Date(this.options.model.attributes.afterEventDate);
             }
             if (_this.datetimepickerOptions.defaultDate < _this.datetimepickerOptions.minDate ||
-                _this.datetimepickerOptions.defaultDate > _this.datetimepickerOptions.maxDate)
-                _this.datetimepickerOptions.defaultDate = _this.datetimepickerOptions.maxDate;
+                _this.datetimepickerOptions.defaultDate > _this.datetimepickerOptions.maxDate) {
+                //_this.datetimepickerOptions.defaultDate = _this.datetimepickerOptions.maxDate;
+            }
+            /******* THIS PART SHOULD BE REMOVED SOON [END] *******/
+
+            if (this.options.model.attributes.sampleCreationDate) {
+                _this.datetimepickerOptions.minDate = new Date(this.options.model.attributes.sampleCreationDate);
+            }
+            
+            if (_this.datetimepickerOptions.defaultDate < _this.datetimepickerOptions.minDate) {
+                _this.datetimepickerOptions.defaultDate = _this.datetimepickerOptions.minDate;
+            }
 
             $($el[0]).datetimepicker(_this.datetimepickerOptions);
             
@@ -188,7 +199,11 @@
             + ' value="<%= value %>" <%= editable %> ></div>', null, Form.templateSettings) //data-date-format="DD/MM/YYYY HH:mm:ss" placeholder="jj/mm/aaaa hh:mm:ss"
         */
 
-        template: _.template('<div class="input-group date dateTimePicker" id="dateTimePicker" data-editors="Date_"><span class="input-group-addon <%= hidden %>"><span class="reneco-calendar reneco"></span></span><input id="c24_Date_" name="Date_" class="<%= editorClass %> <%= required %>" type="text" placeholder="jj/mm/aaaa hh:mm:ss" data-date-format="DD/MM/YYYY" value="<%= value %>" <%= editable %> ></div>', null, Form.templateSettings)
+        template: _.template('<div class="input-group date dateTimePicker" '+
+            'id="dateTimePicker" data-editors="Date_"><span class="input-group-addon <%= hidden %>"> '+
+            '<span class="reneco-calendar reneco"></span></span> '+
+            '<input id="c24_Date_" name="Date_" class="<%= editorClass %> <%= required %>" type="text" '+
+            'placeholder="jj/mm/aaaa hh:mm:ss" data-date-format="DD/MM/YYYY" value="<%= value %>" <%= editable %> ></div>', null, Form.templateSettings)
     });
 
     return Retour;

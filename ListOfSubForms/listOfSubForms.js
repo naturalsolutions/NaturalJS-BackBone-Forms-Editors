@@ -195,7 +195,7 @@ define([
 
                         break;
 
-                        //TODO FIND A WAY TO APPLY ONLY ON CREATE, NOT ON EDIT AND IF DEFAULT VALUE IS NOT FORCED AT 0
+                    //TODO FIND A WAY TO APPLY ONLY ON CREATE, NOT ON EDIT AND IF DEFAULT VALUE IS NOT FORCED AT 0
                     case "number":
                         if (value.options && value.options.defaultValue) {
                             if (element.val() == 0)
