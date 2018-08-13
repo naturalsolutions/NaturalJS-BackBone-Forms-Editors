@@ -130,8 +130,10 @@
 
             var $el = $($.trim(this.template({
                 value: value,
+                inputName: schema.name,
                 editorClass: schema.editorClass,
                 required: required,
+                dateFormat: (schema.options.format ? schema.options.format : 'DD/MM/YYYY'),
                 editable: (options.schema.editable != false) ? '' : 'disabled',
                 hidden: (options.schema.editable != false) ? '' : 'hidden',
                 inputID: this.id,
@@ -202,8 +204,8 @@
         template: _.template('<div class="input-group date dateTimePicker" '+
             'id="dateTimePicker" data-editors="Date_"><span class="input-group-addon <%= hidden %>"> '+
             '<span class="reneco-calendar reneco"></span></span> '+
-            '<input id="c24_Date_" name="Date_" class="<%= editorClass %> <%= required %>" type="text" '+
-            'placeholder="jj/mm/aaaa hh:mm:ss" data-date-format="DD/MM/YYYY" value="<%= value %>" <%= editable %> ></div>', null, Form.templateSettings)
+            '<input id="c24_Date_" name="<%= inputName %>" class="<%= editorClass %> <%= required %>" type="text" '+
+            'placeholder="<%= dateFormat %>" data-date-format="<%= dateFormat %>" value="<%= value %>" <%= editable %> ></div>', null, Form.templateSettings)
     });
 
     return Retour;
