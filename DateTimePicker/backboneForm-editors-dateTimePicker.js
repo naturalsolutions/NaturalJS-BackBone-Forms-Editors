@@ -66,6 +66,7 @@
             if (options.schema.options) {
                 this.format = options.schema.options.format;
                 this.maxDate = options.schema.options.maxDate || false;
+                this.minDate = options.schema.options.minDate || false;
                 this.defaultDate = options.schema.options.defaultValue || false;
             } else {
                 this.format = "DD/MM/YYYY HH:mm:ss";
@@ -78,6 +79,9 @@
             if (this.maxDate) {
                 this.datetimepickerOptions.maxDate = moment(this.maxDate, this.format);
             }
+            if (this.minDate) {
+                this.datetimepickerOptions.minDate = moment(this.minDate, this.format);
+            }
 
             this.classIcon = 'reneco-calendar reneco';
             if (this.format && (this.format.toLowerCase() == 'hh:mm:ss')) {
@@ -86,15 +90,13 @@
         },
 
         getValue: function () {
-            /* TOCHECK
-            var date = new Date;
-            var input = this.$el.find('#' + this.id);
-            return this.$el.find('#' + this.id).val();
-            */
-
             var date= new Date;
-            if (this.el.children['Date_'])
-                return this.el.children['Date_'].value;
+            if ($(this.el).find("input").length > 0)
+            {
+                // NOW RETURNING ATTR(VALUE) INSTEAD OF VAL() -> return $(this.el).find("input").val();
+                return $(this.el).find("input").attr("value");
+            }
+            //console.log("/!\\ALERT/!\\ I'm returning a default Date, this should probably not happen");
             return date;
         },
 
@@ -146,7 +148,8 @@
                 
                 $($el[0]).on('dp.change', function (e, f) {
 
-                    if (e.oldDate == null || (e.oldDate.format("MM/DD/YYYY") == e.date.format("MM/DD/YYYY"))) {
+                    if (e.oldDate == null || (e.date && e.oldDate.format("MM/DD/YYYY") == e.date.format("MM/DD/YYYY"))) {
+
                     }
                     else {
                         $(e.target).data('DateTimePicker').hide();
@@ -154,23 +157,6 @@
                 });
 
             }
-
-            /******* THIS PART SHOULD BE REMOVED SOON [START] *******/
-            /*
-                this.options.model.attributes.beforeEventDate, new Date(this.options.model.attributes.beforeEventDate),
-                "maxdate =", this.options.model.attributes.afterEventDate, new Date(this.options.model.attributes.afterEventDate));
-                */
-            if (this.options && this.options.model.attributes.beforeEventDate) {
-                //_this.datetimepickerOptions.minDate = new Date(this.options.model.attributes.beforeEventDate);
-            }
-            if (this.options && this.options.model.attributes.afterEventDate) {
-                //_this.datetimepickerOptions.maxDate = new Date(this.options.model.attributes.afterEventDate);
-            }
-            if (_this.datetimepickerOptions.defaultDate < _this.datetimepickerOptions.minDate ||
-                _this.datetimepickerOptions.defaultDate > _this.datetimepickerOptions.maxDate) {
-                //_this.datetimepickerOptions.defaultDate = _this.datetimepickerOptions.maxDate;
-            }
-            /******* THIS PART SHOULD BE REMOVED SOON [END] *******/
 
             if (this.options.model.attributes.sampleCreationDate) {
                 _this.datetimepickerOptions.minDate = new Date(this.options.model.attributes.sampleCreationDate);
@@ -180,26 +166,16 @@
                 _this.datetimepickerOptions.defaultDate = _this.datetimepickerOptions.minDate;
             }
 
+            if (_this.datetimepickerOptions.defaultDate > _this.datetimepickerOptions.maxDate) {
+                _this.datetimepickerOptions.defaultDate = _this.datetimepickerOptions.maxDate;
+            }
+
             $($el[0]).datetimepicker(_this.datetimepickerOptions);
-            
-            //tmp solution ? datetimepicker remove the value
-            /*            if(this.options){
-                            var value = this.options.model.get(this.options.key);
-                            $el.find('input').val(value);
-                        }*/
 
             return this;
         },
     }, {
         // STATICS
-
-        /* TOCHECK
-        template: _.template('<div class="input-group date dateTimePicker"'
-            + 'data-editors="Date_"><span class="input-group-addon <%= hidden %>">'
-            + '<span class="<%= iconClass %> "></span></span><input id="<%=inputID%>" '
-            + 'name="Date_" class="<%= editorClass %> <%= required %>" type="text" '
-            + ' value="<%= value %>" <%= editable %> ></div>', null, Form.templateSettings) //data-date-format="DD/MM/YYYY HH:mm:ss" placeholder="jj/mm/aaaa hh:mm:ss"
-        */
 
         template: _.template('<div class="input-group date dateTimePicker" '+
             'id="dateTimePicker" data-editors="Date_"><span class="input-group-addon <%= hidden %>"> '+

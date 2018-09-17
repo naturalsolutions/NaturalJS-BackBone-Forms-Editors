@@ -138,10 +138,23 @@ define([
             var itemsize = Math.floor(12 / Object.keys(model.schema).length);
 
             $.each(model.schema, function (index, value) {
-                var strRef = "label[for='" + model.cid + "_" + value.name.toLowerCase() + "']";
+                var strRef = "label[for='" + model.cid + "_" + value.name + "']";
 
-                $(strRef).parent().addClass("col-xs-6");
-                //$("label[for='" + model.cid + "_" + value.name.toLowerCase() + "']").parent().addClass("col-xs-" + itemsize);
+                if ($(strRef).length > 0)
+                {
+                    var lengthToSet = "col-xs-6";
+                    var formControl = $(strRef)[0].control;
+
+                    if ($(formControl).length > 0) {
+                        var fcClasses = $(formControl).prop("class").split(" ");
+                        $.each(fcClasses, function (subindex, subvalue) {
+                            if (subvalue.indexOf("col-") != -1) {
+                                lengthToSet = "col-xs-" + subvalue.split("-")[2];
+                            }
+                        });
+                    }
+                    $(strRef).parent().addClass(lengthToSet);
+                }
 
                 if (value.editorClass.indexOf("HiddenInput") !== -1)
                     $(strRef).parent().addClass("HiddenInputParent");
@@ -212,12 +225,13 @@ define([
         },
 
         render: function () {
-            //Backbone.View.prototype.initialize.call(this, options);
+            var that = this;
+
             var $el = $($.trim(this.template({
                 hidden: this.hidden
             })));
+
             this.setElement($el);
-            //init forms
 
             var key = this.options.key;
             var data = {};
