@@ -15,7 +15,6 @@
 
         // Next for Node.js or CommonJS. jQuery may not be needed as a module.
     } else if (typeof exports !== 'undefined') {
-        //console.log('common JS');
         var $ = require('jquery');
         var _ = require('underscore');
         var Backbone = require('backbone');

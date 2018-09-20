@@ -65,7 +65,7 @@
 		}
 
 		var methods = {
-			init: function (parametres) {                
+		    init: function (parametres) {
 				//Fusion des paramètres envoyer avec les params par defaut
 				if (parametres) {
 					var parametres = $.extend(defauts, parametres);
@@ -110,13 +110,14 @@
 							nbExpand: 0
 						},
 						//defini la source pour les elts parents
-						source: {
+						source: (parametres.storedTree ?
+                            parametres.storedTree.getNodeByKey(parametres.startId).children : {
 							type: "POST",
 							url: parametres.wsUrl + "/" + parametres.webservices,
 							datatype: 'jsonp',
 							contentType: "application/json; charset=utf-8",
 							data: dataToSend
-						},
+						}),
 						//Permet si l'arbre et en mode filter d'afficher les enfants des termes filtrés -> submatch
 						renderNode: function (event, data) {
 						    if (this.options.renderCountdown > 0)

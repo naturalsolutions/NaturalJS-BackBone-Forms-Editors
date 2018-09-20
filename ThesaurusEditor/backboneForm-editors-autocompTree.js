@@ -7,8 +7,9 @@ define([
 	'backbone',
 	'backbone_forms',
 	'autocompTree',
+    'GlobalModel'
 ], function (
-	_, $, $ui, Backbone, Form, autocompTree
+	_, $, $ui, Backbone, Form, autocompTree, GlobalModelManager
 ) {
 
    
@@ -34,9 +35,7 @@ define([
     'use strict';
     return Form.editors.AutocompTreeEditor = Form.editors.Base.extend({
 
-
         previousValue: '',
-
         events: {
             'hide': "hasChanged"
         },
@@ -49,6 +48,8 @@ define([
         },
 
         initialize: function (options) {
+            options.schema.options.storedTree = GlobalModelManager.GetThesaurusTree();
+
             Form.editors.Base.prototype.initialize.call(this, options);
             this.FirstRender = true;
             this.languages = {
@@ -93,6 +94,7 @@ define([
             this.lng = options.schema.options.lng;
             this.displayValueName = options.schema.options.displayValueName || 'fullpathTranslated';
             this.storedValueName = options.schema.options.storedValueName || 'fullpath';
+            this.storedTree = options.schema.options.storedTree || null;
 
             //todo : tmp safe check, toremove ?
             if (!this.validators)
@@ -126,21 +128,14 @@ define([
                         storedValueName: _this.storedValueName
                     },
                     inputValue: _this.value,
-                    startId: _this.startId
-                    /* TODO : REMOVED AS A TEST AS THOSE EVENTS USED TO SCREW UP THE PERFS,
-                    onInputBlur: function (options) {
-                        var value = _this.$el.find('#' + _this.id + '_value').val();
-                        _this.onEditValidation(value);
-                    },
-                    onItemClick: function (options) {
-                        var value = _this.$el.find('#' + _this.id + '_value').val();
-                        _this.onEditValidation(value);
-                    }*/
+                    startId: _this.startId,
+                    storedTree: _this.storedTree
                 });
                    
                 if (_this.translateOnRender) {
                     _this.validateAndTranslate(_this.value, true);
                 }
+
                 if (_this.FirstRender) {
                     _this.$el.find('#' + _this.id).blur(function (options) {
                         setTimeout(function (options) {
