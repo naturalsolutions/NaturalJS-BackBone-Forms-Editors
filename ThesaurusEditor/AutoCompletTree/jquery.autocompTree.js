@@ -7,7 +7,7 @@
 *       - Fancytree (importé la bibliothèque jquery.fancytree-all ainsi que son css)
 */
 (function ($) {
-	$.fn.autocompTree = function (methodOrOptions) {
+    $.fn.autocompTree = function (methodOrOptions) {
 		//On définit nos paramètres par défaut
 		var _self = $(this);
 		var defauts =
@@ -70,6 +70,8 @@
 				if (parametres) {
 					var parametres = $.extend(defauts, parametres);
 				};
+				this.parametres = parametres;
+
 				//Information à envoyer 
 				var dataToSend = '';
 				if (parametres.language.hasLanguage) {
@@ -111,13 +113,15 @@
 						},
 						//defini la source pour les elts parents
 						source: (parametres.storedTree ?
-                            parametres.storedTree.getNodeByKey(parametres.startId).children : {
-							type: "POST",
-							url: parametres.wsUrl + "/" + parametres.webservices,
-							datatype: 'jsonp',
-							contentType: "application/json; charset=utf-8",
-							data: dataToSend
-						}),
+                            parametres.storedTree.getNodeByKey(parametres.startId.trim()).children :
+                            {
+							    type: "POST",
+							    url: parametres.wsUrl + "/" + parametres.webservices,
+							    datatype: 'jsonp',
+							    contentType: "application/json; charset=utf-8",
+							    data: dataToSend
+                            }
+                        ),
 						//Permet si l'arbre et en mode filter d'afficher les enfants des termes filtrés -> submatch
 						renderNode: function (event, data) {
 						    if (this.options.renderCountdown > 0)

@@ -112,7 +112,6 @@ define([
         },
 
         render: function () {
-
             var $el = $(this.template);
             this.setElement($el);
             var _this = this;
@@ -140,15 +139,33 @@ define([
                     _this.$el.find('#' + _this.id).blur(function (options) {
                         setTimeout(function (options) {
                             var value = _this.$el.find('#' + _this.id + '_value').val();
-                            _this.toBeTranslated = true ;
+                            _this.toBeTranslated = true;
                             _this.onEditValidation(value);
-                        }, 150);
+                        }, 200);
                     });
                 }
                 _this.FirstRender = false;
             }).defer();
             return this;
         },
+        applyTranslation: function (translatedDatas, isTranslated) {
+            var _this = this;
+            var data = translatedDatas;
+
+            $('#divAutoComp_' + _this.id).removeClass('error');
+
+            var translatedValue = data["TTop_FullPathTranslated"];
+            if (isTranslated) {
+                if (_this.displayValueName == 'valueTranslated') {
+                    translatedValue = data["TTop_NameTranslated"];
+                }
+                _this.$el.find('#' + _this.id).val(translatedValue);
+                _this.$el.find('#' + _this.id + '_value').val(data['TTop_FullPath']);
+            }
+
+            _this.displayErrorMsg(false);
+        },
+
         validateAndTranslate: function (value, isTranslated) {
             var _this = this;
             
@@ -161,45 +178,34 @@ define([
                 TypeField = 'Name';
             }
             var erreur;
-
-            $.ajax({
-                url: _this.wsUrl + "/getTraductionByType",
-                //timeout: 3000,
-                data: '{ "sInfo" : "' + value + '", "sTypeField" : "' + TypeField + '", "iParentId":"' + _this.startId + '",lng:"' + _this.lng + '"  }',
-                dataType: "json",
-                type: "POST",
-                //async:false,
-                contentType: "application/json; charset=utf-8",
-                success: function (data) {
-                    $('#divAutoComp_' + _this.id).removeClass('error');
-                    _this.displayErrorMsg(false);
-
-                    var translatedValue = data["TTop_FullPathTranslated"];
-                    if (isTranslated) {
-                        if (_this.displayValueName == 'valueTranslated') {
-                            translatedValue = data["TTop_NameTranslated"];
+            var translationDatas = GlobalModelManager.getTranslationDatasFor(value,_this.lng);
+            if (translationDatas)
+            {
+                _this.applyTranslation(translationDatas, isTranslated);
+            }
+            else
+            {
+                $.ajax({
+                    url: _this.wsUrl + "/getTraductionByType",
+                    //timeout: 3000,
+                    data: '{ "sInfo" : "' + value + '", "sTypeField" : "' + TypeField + '", "iParentId":"' + _this.startId + '",lng:"' + _this.lng + '"  }',
+                    dataType: "json",
+                    type: "POST",
+                    //async:false,
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        GlobalModelManager.setTranslationDatasFor(value, _this.lng, data);
+                        _this.applyTranslation(data, isTranslated);
+                    },
+                    error: function (data) {
+                        _this.$el.find('#' + _this.id).val(value);
+                        if (_this.editable) {
+                            $('#divAutoComp_' + _this.id).addClass('error');
+                            _this.displayErrorMsg(true);
                         }
-                        //_this.$el.find('#' + _this.id).val(translatedValue);
-                        //_this.$el.find('#' + _this.id + '_value').val(data["TTop_FullPath"]);
-                        _this.$el.find('#' + _this.id).val(translatedValue);
-                        _this.$el.find('#' + _this.id + '_value').val(data['TTop_FullPath']);
                     }
-
-                    _this.displayErrorMsg(false);
-
-
-                },
-                error: function (data) {
-                    _this.$el.find('#' + _this.id).val(value);
-                    if (_this.editable) {
-                        $('#divAutoComp_' + _this.id).addClass('error');
-                        _this.displayErrorMsg(true);
-                    }
-                }
-            });
-
-
-
+                });
+            }
         },
         onEditValidation: function (value) {
             var _this = this;
