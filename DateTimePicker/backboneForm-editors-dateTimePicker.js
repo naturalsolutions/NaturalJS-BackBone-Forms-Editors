@@ -143,7 +143,6 @@
             })));
             this.setElement($el);
             
-
             if (_this.options.schema.options.closeOnClick == null || _this.options.schema.options.closeOnClick) {
                 
                 $($el[0]).on('dp.change', function (e, f) {
@@ -171,6 +170,10 @@
             }
 
             $($el[0]).datetimepicker(_this.datetimepickerOptions);
+
+            //TODO THATS UGLY, BUT FOR SOME REASON, ON THE EVENT "CREATE" THE EVENTDATE IS NOT SET ...
+            // THIS TRICK MANUALLY SETS THE DATE ON RENDERING AS ITS VALUE ATTRIBUTE ... WHICH IS PROPERLY SET
+            $(this.el).find("input").val($(this.el).find("input").attr("value"));
 
             return this;
         },
