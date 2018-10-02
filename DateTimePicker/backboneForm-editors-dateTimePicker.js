@@ -37,16 +37,12 @@
 
 
     var Retour = Form.editors.DateTimePickerEditor = Form.editors.Base.extend({
-
-
-
         previousValue: '',
-
         events: {
             'hide': "hasChanged"
         },
-
         hasChanged: function (currentValue) {
+            console.log("changed !");
             if (currentValue !== this.previousValue) {
                 this.previousValue = currentValue;
                 this.trigger('change', this);
@@ -94,7 +90,8 @@
             if ($(this.el).find("input").length > 0)
             {
                 // NOW RETURNING ATTR(VALUE) INSTEAD OF VAL() -> return $(this.el).find("input").val();
-                return $(this.el).find("input").attr("value");
+                var attrvalue = $(this.el).find("input").attr("value");
+                return (attrvalue ? attrvalue : $(this.el).find("input").val());
             }
             //console.log("/!\\ALERT/!\\ I'm returning a default Date, this should probably not happen");
             return date;
