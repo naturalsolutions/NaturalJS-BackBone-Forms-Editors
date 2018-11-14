@@ -33,16 +33,12 @@
     }
 
 }(this, function (root, DateTimePickerEditor, _, $, Backbone, Form, datetimepicker, moment) {
-
-
-
     var Retour = Form.editors.DateTimePickerEditor = Form.editors.Base.extend({
         previousValue: '',
         events: {
             'hide': "hasChanged"
         },
         hasChanged: function (currentValue) {
-            console.log("changed !");
             if (currentValue !== this.previousValue) {
                 this.previousValue = currentValue;
                 this.trigger('change', this);
@@ -141,9 +137,7 @@
             this.setElement($el);
             
             if (_this.options.schema.options.closeOnClick == null || _this.options.schema.options.closeOnClick) {
-                
                 $($el[0]).on('dp.change', function (e, f) {
-
                     if (e.oldDate == null || (e.date && e.oldDate.format("MM/DD/YYYY") == e.date.format("MM/DD/YYYY"))) {
 
                     }
@@ -151,7 +145,6 @@
                         $(e.target).data('DateTimePicker').hide();
                     }
                 });
-
             }
 
             if (this.options.model.attributes.sampleCreationDate) {

@@ -80,6 +80,10 @@
 					dataToSend = '{"StartNodeID":"' + parametres.startId + '"}'
 				}
 
+				var topNode = {};
+				if (parametres.storedTree) {
+				    topNode = parametres.storedTree.getNodeByKey(parametres.startId.trim());
+				}
 				_self.each(function () {
 					var $me = $(this);
 					//On encapsule l'input ainsi que tous les éléments dans un div afin de les contrôlés
@@ -96,32 +100,33 @@
 
 					//Insertion de la valeur dans l'input
 					$me.val(parametres.inputValue);
-
+					$meFancy = $('#treeView' + $me.attr("id"));
 					//Initialisation de l'arbre
-					$('#treeView' + $me.attr("id")).fancytree({
-						debugLevel: 0,
-						extensions: ["filter"],
-						autoActivate: false,
-						keyboard: true,
-                        renderCountdown: 2,
-						filter: {
-							mode: "hide"
-						},
-						hideExpand: {
-							isHide: false,
-							nbExpand: 0
-						},
-						//defini la source pour les elts parents
-						source: (parametres.storedTree ?
-                            parametres.storedTree.getNodeByKey(parametres.startId.trim()).children :
+					$meFancy.fancytree({
+					    debugLevel: 0,
+					    extensions: ["filter"],
+					    autoActivate: false,
+					    keyboard: true,
+					    renderCountdown: 2,
+					    filter: {
+					        mode: "hide"
+					    },
+					    hideExpand: {
+					        isHide: false,
+					        nbExpand: 0
+					    },
+					    //defini la source pour les elts parents
+					    source:
+                            (parametres.storedTree ? topNode.children :
                             {
-							    type: "POST",
-							    url: parametres.wsUrl + "/" + parametres.webservices,
-							    datatype: 'jsonp',
-							    contentType: "application/json; charset=utf-8",
-							    data: dataToSend
-                            }
-                        ),
+                                type: "POST",
+                                url: parametres.wsUrl + "/" + parametres.webservices,
+                                datatype: 'jsonp',
+                                contentType: "application/json; charset=utf-8",
+                                data: dataToSend
+                            })
+                        ,
+					    defaultNode: topNode,
 						//Permet si l'arbre et en mode filter d'afficher les enfants des termes filtrés -> submatch
 						renderNode: function (event, data) {
 						    if (this.options.renderCountdown > 0)
@@ -157,7 +162,14 @@
 								}
 							}
 						},
-						//evenement d'activation de l'arbre (au clique)
+						loadChildren: function (event, data) {
+						    if (data.node.children.length == 0)
+						    {
+						        $me.val(data.options.defaultNode.data.fullpathTranslated);
+						        $("#" + $me.attr('id') + parametres.display.suffixeId).val(data.options.defaultNode.data.fullpath);
+						    }
+						},
+						//evenement d'activation de l'arbre (au clic)
 						activate: function (event, data) {
 							var tree = $("#treeView" + $me.attr("id")).fancytree('getTree');
 							if (parametres.display.isDisplayDifferent) {
@@ -200,8 +212,9 @@
 						}
 					});
 					//Permet l'affichage du treeview au focus sur l'input
-
-
+                    if ($meFancy[0].children[0].childElementCount == 0) {
+					    console.log($meFancy[0].children[0].data);
+					}
 					$me.focus(function () {
 
 						$("div[id^=treeView]").each(function () {
@@ -292,6 +305,7 @@
 						}
 					}
 				});
+
 				return _self;
 			},
 			reload: function (source) {
