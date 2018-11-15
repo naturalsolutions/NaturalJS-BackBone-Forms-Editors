@@ -174,7 +174,7 @@
             'id="dateTimePicker" data-editors="Date_"><span class="input-group-addon <%= hidden %>"> '+
             '<span class="reneco-calendar reneco"></span></span> '+
             '<input id="c24_Date_" name="<%= inputName %>" class="<%= editorClass %> <%= required %>" type="text" '+
-            'placeholder="<%= dateFormat %>" data-date-format="<%= dateFormat %>" value="<%= value %>" <%= editable %> ></div>', null, Form.templateSettings)
+            'data-date-format="<%= dateFormat %>" value="<%= value %>" <%= editable %> ></div>', null, Form.templateSettings)
     });
 
     return Retour;
