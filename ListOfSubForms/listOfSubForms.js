@@ -7,9 +7,25 @@ define([
 
 ], function ($, _, Backbone, Marionette, Form, List, tpl) {
 
-    'use strict';
-
     Backbone.Form.validators.ListOfSubFormsValidator = function (options) {
+        return function subforms(value) {
+            var errors = [];
+            for (var i = 0; i < options.editor.forms.length; i++) {
+                var validation = options.editor.forms[i].validate();
+                if (validation != null) {
+                    errors.push(validation);
+                }
+            }
+            if (errors.length > 0) {
+                return errors;
+            }
+            else {
+                return null;
+            }
+        };
+    };
+
+    Form.validators.ListOfSubFormsValidator = function (options) {
         return function subforms(value) {
             var errors = [];
             for (var i = 0; i < options.editor.forms.length; i++) {

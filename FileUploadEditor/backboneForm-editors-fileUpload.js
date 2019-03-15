@@ -43,7 +43,6 @@ define([
             if (this.existingFiles == null) {
                 this.existingFiles = [];
             }
-
         },
 
 
@@ -65,9 +64,14 @@ define([
             var options = this.options;
             var schema = this.schema;
             var $el = _.template(
-                this.template, { id: this.id, key: this.key,acceptedFiles:this.options.schema.options.acceptedFiles,editorClass:this.options.schema.editorClass }
+                this.template, {
+                    id: this.id,
+                    key: this.key,
+                    acceptedFiles: this.options.schema.options.acceptedFiles,
+                    editorClass: this.options.schema.editorClass,
+                    askPortrait: this.options.schema.options.askPortrait
+                }
             );
-
 
             this.setElement($el);
             if (this.schema.editable == false) {
@@ -128,6 +132,9 @@ define([
 
             fd.append('fileName', $('#input_' + this.id)[0].files[0].name);
             fd.append('fileExtension', ext);
+            fd.append('isPortrait', ($("#isPortrait").is(':checked') ? 1 : 0));
+            if ($("#isPortrait").is(':checked'))
+                $("#isPortrait").prop('checked', false);
             $.ajax({
                 type: 'POST',
                 url: fileUrl,

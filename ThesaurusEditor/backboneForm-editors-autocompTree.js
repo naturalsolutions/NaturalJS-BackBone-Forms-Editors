@@ -11,9 +11,6 @@ define([
 ], function (
 	_, $, $ui, Backbone, Form, autocompTree, GlobalModelManager
 ) {
-
-   
-
     Backbone.Form.validators.Thesaurus = function (options) {
         return function Thesaurus(value) {
             if (!options.parent.isTermError) {
@@ -26,13 +23,24 @@ define([
             };
 
             return retour;
-
         };
     };
 
+    Form.validators.Thesaurus = function (options) {
+        return function Thesaurus(value) {
+            if (!options.parent.isTermError) {
+                return null;
+            }
+            return null;
+            var retour = {
+                type: options.type,
+                message: ''
+            };
 
+            return retour;
+        };
+    };
 
-    'use strict';
     return Form.editors.AutocompTreeEditor = Form.editors.Base.extend({
 
         previousValue: '',
