@@ -41,7 +41,7 @@ define([
         };
     };
 
-    return Form.editors.AutocompTreeEditor = Form.editors.Base.extend({
+    var myAutocompTreeEditor = Form.editors.Base.extend({
 
         previousValue: '',
         events: {
@@ -253,5 +253,8 @@ define([
                     </div>',
     });
 
+    Form.editors.AutocompTreeEditor = myAutocompTreeEditor;
+    Backbone.Form.editors.AutocompTreeEditor = myAutocompTreeEditor;
 
+    return myAutocompTreeEditor;
 });
