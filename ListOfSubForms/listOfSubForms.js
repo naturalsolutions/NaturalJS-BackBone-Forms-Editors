@@ -43,7 +43,7 @@ define([
         };
     };
 
-    return Form.editors.ListOfSubForms = Form.editors.Base.extend({
+    var myListOfSubForms = Form.editors.Base.extend({
         events: {
             'click #addFormBtn': 'addEmptyForm',
         },
@@ -314,4 +314,8 @@ define([
             ', null, Form.templateSettings),
     });
 
+    Form.editors.ListOfSubForms = myAutocompTreeEditor;
+    Backbone.Form.editors.ListOfSubForms = myAutocompTreeEditor;
+
+    return myListOfSubForms;
 });
