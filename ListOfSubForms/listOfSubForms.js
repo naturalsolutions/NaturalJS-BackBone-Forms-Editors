@@ -314,8 +314,8 @@ define([
             ', null, Form.templateSettings),
     });
 
-    Form.editors.ListOfSubForms = myAutocompTreeEditor;
-    Backbone.Form.editors.ListOfSubForms = myAutocompTreeEditor;
+    Form.editors.ListOfSubForms = myListOfSubForms;
+    Backbone.Form.editors.ListOfSubForms = myListOfSubForms;
 
     return myListOfSubForms;
 });

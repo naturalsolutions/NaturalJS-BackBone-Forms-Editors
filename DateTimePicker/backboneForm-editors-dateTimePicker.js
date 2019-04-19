@@ -148,7 +148,7 @@
             }
 
             if (this.options.model.attributes.sampleCreationDate) {
-                _this.datetimepickerOptions.minDate = new Date(this.options.model.attributes.sampleCreationDate);
+                _this.datetimepickerOptions.minDate = moment(this.options.model.attributes.sampleCreationDate, "YYYY-MM-DD");
             }
             
             if (_this.datetimepickerOptions.defaultDate < _this.datetimepickerOptions.minDate) {
