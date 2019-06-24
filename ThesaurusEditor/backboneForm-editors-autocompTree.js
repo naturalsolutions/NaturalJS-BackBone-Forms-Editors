@@ -55,8 +55,21 @@ define([
             }
         },
 
+        initStoredTree: function (options, loop) {
+            var that = this;
+
+            if (!options.schema.options.storedTree)
+                this.storedTree = GlobalModelManager.GetThesaurusTree();
+            else
+                this.storedTree = options.schema.options.storedTree;
+
+            if (!this.storedTree && loop < 30) {
+                setTimeout(function () { that.initStoredTree(options, loop+1); }, 1000);
+            }
+        },
+
         initialize: function (options) {
-            options.schema.options.storedTree = GlobalModelManager.GetThesaurusTree();
+            this.initStoredTree(options, 0);
 
             Form.editors.Base.prototype.initialize.call(this, options);
             this.FirstRender = true;
@@ -64,7 +77,7 @@ define([
                 'fr': '',
                 'en': 'En'
             };
-            
+
             this.ValidationRealTime = true;
             if (options.schema.options.ValidationRealTime == false) {
                 this.ValidationRealTime = false;
@@ -74,18 +87,17 @@ define([
 
             this.validators = options.schema.validators || [];
 
-
             this.isTermError = false;
-            
+
             this.template = options.template || this.constructor.template;
             this.id = options.id;
             var editorAttrs = "";
-            
+
             this.editable = options.schema.editable || true;
-            if (options.schema.editorAttrs && options.schema.editorAttrs.disabled)  {
+            if (options.schema.editorAttrs && options.schema.editorAttrs.disabled) {
                 this.editable = false;
             }
-            if (this.editable!=null && !this.editable) {
+            if (this.editable != null && !this.editable) {
                 editorAttrs += 'disabled="disabled"';
                 this.ValidationRealTime = false;
             }
@@ -93,7 +105,7 @@ define([
                 inputID: this.id,
                 editorAttrs: editorAttrs,
                 editorClass: options.schema.editorClass,
-                iconFont:iconFont
+                iconFont: iconFont
             }
 
             this.template = _.template(this.template, tplValeurs);
@@ -102,12 +114,11 @@ define([
             this.lng = options.schema.options.lng;
             this.displayValueName = options.schema.options.displayValueName || 'fullpathTranslated';
             this.storedValueName = options.schema.options.storedValueName || 'fullpath';
-            this.storedTree = options.schema.options.storedTree || null;
 
             //todo : tmp safe check, toremove ?
             if (!this.validators)
                 this.validators = [];
-            this.validators.push({ type: 'Thesaurus', startId: this.startId, wsUrl: this.wsUrl,parent:this });
+            this.validators.push({ type: 'Thesaurus', startId: this.startId, wsUrl: this.wsUrl, parent: this });
             this.translateOnRender = options.translateOnRender || true;
         },
 
@@ -119,14 +130,12 @@ define([
             return this.$el.find('#' + this.id + '_value').val();
         },
 
-        render: function () {
-            var $el = $(this.template);
-            this.setElement($el);
+        generateAutocompTree: function (loop) {
             var _this = this;
-            _(function () {
+            if (this.storedTree) {
                 _this.$el.find('#' + _this.id).autocompTree({
                     wsUrl: _this.wsUrl,
-                    webservices: 'fastInitForCompleteTree',
+                    webservices: 'fakeInitForCompleteTree',
                     language: { hasLanguage: true, lng: _this.lng },
                     display: {
                         isDisplayDifferent: true,
@@ -138,7 +147,7 @@ define([
                     startId: _this.startId,
                     storedTree: _this.storedTree
                 });
-                   
+
                 if (_this.translateOnRender) {
                     _this.validateAndTranslate(_this.value, true);
                 }
@@ -153,6 +162,19 @@ define([
                     });
                 }
                 _this.FirstRender = false;
+            }
+            else if (loop < 30)
+            {
+                setTimeout(function () { _this.generateAutocompTree(loop + 1); }, 1000);
+            }
+        },
+
+        render: function () {
+            var $el = $(this.template);
+            this.setElement($el);
+            var _this = this;
+            _(function () {
+                _this.generateAutocompTree(0);
             }).defer();
             return this;
         },

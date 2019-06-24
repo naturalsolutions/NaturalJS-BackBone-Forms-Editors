@@ -43,8 +43,21 @@ define([
             }
         },
 
+        initStoredTree: function (options, loop) {
+            var that = this;
+
+            if (!options.schema.options.storedTree)
+                this.storedTree = GlobalModelManager.GetPositionTree();
+            else
+                this.storedTree = options.schema.options.storedTree;
+
+            if (!this.storedTree && loop < 30) {
+                setTimeout(function () { that.initStoredTree(options, loop + 1); }, 1000);
+            }
+        },
+
         initialize: function (options) {
-            options.schema.options.storedTree = GlobalModelManager.GetPositionTree();
+            this.initStoredTree(options, 0);
 
             Form.editors.Base.prototype.initialize.call(this, options);
             this.FirstRender = true;
@@ -90,7 +103,6 @@ define([
             this.lng = options.schema.options.lng;
             this.displayValueName = options.schema.options.displayValueName || 'fullpathTranslated';
             this.storedValueName = options.schema.options.storedValueName || 'fullpath';
-            this.storedTree = options.schema.options.storedTree || null;
 
             //todo : tmp safe check, toremove ?
             if (!this.validators)
@@ -105,12 +117,10 @@ define([
             }
             return this.$el.find('#' + this.id + '_value').val();
         },
-
-        render: function () {
-            var $el = $(this.template);
-            this.setElement($el);
+        
+        generateAutocompTree: function (loop) {
             var _this = this;
-            _(function () {
+            if (this.storedTree) {
                 _this.$el.find('#' + _this.id).autocompTree({
                     wsUrl: _this.wsUrl,
                     webservices: 'GetTree',
@@ -135,6 +145,18 @@ define([
                     });
                 }
                 _this.FirstRender = false;
+            }
+            else if (loop < 30) {
+                setTimeout(function () { _this.generateAutocompTree(loop + 1); }, 1000);
+            }
+        },
+
+        render: function () {
+            var $el = $(this.template);
+            this.setElement($el);
+            var _this = this;
+            _(function () {
+                _this.generateAutocompTree(0);
             }).defer();
             return this;
         },

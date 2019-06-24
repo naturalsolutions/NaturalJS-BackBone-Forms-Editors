@@ -211,10 +211,12 @@
 						    }
 						}
 					});
-					//Permet l'affichage du treeview au focus sur l'input
+				    //Permet l'affichage du treeview au focus sur l'input
+				    /* TODO DEPRECATED??
                     if ($meFancy[0].children[0].childElementCount == 0) {
 					    console.log($meFancy[0].children[0].data);
 					}
+                    */
 					$me.focus(function () {
 
 						$("div[id^=treeView]").each(function () {
