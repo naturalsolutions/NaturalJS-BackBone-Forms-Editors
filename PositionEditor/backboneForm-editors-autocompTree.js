@@ -61,10 +61,6 @@ define([
 
             Form.editors.Base.prototype.initialize.call(this, options);
             this.FirstRender = true;
-            this.languages = {
-                'fr': '',
-                'en': 'En'
-            };
             
             this.ValidationRealTime = true;
             if (options.schema.options.ValidationRealTime == false) {
@@ -74,7 +70,6 @@ define([
             var iconFont = options.schema.options.iconFont || 'hidden';
 
             this.validators = options.schema.validators || [];
-
 
             this.isTermError = false;
             
@@ -111,7 +106,6 @@ define([
         },
 
         getValue: function () {
-
             if (this.isTermError) {
                 return null;
             }
@@ -123,7 +117,7 @@ define([
             if (this.storedTree) {
                 _this.$el.find('#' + _this.id).autocompTree({
                     wsUrl: _this.wsUrl,
-                    webservices: 'GetTree',
+                    webservices: 'YouShouldntReadThis',
                     language: { hasLanguage: true, lng: _this.lng },
                     display: {
                         isDisplayDifferent: true,
@@ -162,7 +156,7 @@ define([
         },
 		
         onEditValidation: function (value) {
-			
+            this.isTermError = true;
         },
 
         displayErrorMsg: function (bool) {

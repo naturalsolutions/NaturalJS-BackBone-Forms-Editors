@@ -1,5 +1,3 @@
-
-
 define([
 	'underscore',
 	'jquery',
@@ -11,7 +9,8 @@ define([
 ], function (
 	_, $, $ui, Backbone, Form, autocompTree, GlobalModelManager
 ) {
-    Backbone.Form.validators.Thesaurus = function (options) {
+
+    var thesaurusValidator = function (options) {
         return function Thesaurus(value) {
             if (!options.parent.isTermError) {
                 return null;
@@ -26,20 +25,8 @@ define([
         };
     };
 
-    Form.validators.Thesaurus = function (options) {
-        return function Thesaurus(value) {
-            if (!options.parent.isTermError) {
-                return null;
-            }
-            return null;
-            var retour = {
-                type: options.type,
-                message: ''
-            };
-
-            return retour;
-        };
-    };
+    Backbone.Form.validators.Thesaurus = thesaurusValidator;
+    Form.validators.Thesaurus = thesaurusValidator
 
     var myAutocompTreeEditor = Form.editors.Base.extend({
 
@@ -47,7 +34,7 @@ define([
         events: {
             'hide': "hasChanged"
         },
-        editable:false,
+        editable: false,
         hasChanged: function (currentValue) {
             if (currentValue !== this.previousValue) {
                 this.previousValue = currentValue;
@@ -64,7 +51,7 @@ define([
                 this.storedTree = options.schema.options.storedTree;
 
             if (!this.storedTree && loop < 30) {
-                setTimeout(function () { that.initStoredTree(options, loop+1); }, 1000);
+                setTimeout(function () { that.initStoredTree(options, loop + 1); }, 1000);
             }
         },
 
@@ -74,7 +61,7 @@ define([
             Form.editors.Base.prototype.initialize.call(this, options);
             this.FirstRender = true;
             this.languages = {
-                'fr': '',
+                'fr': 'Fr',
                 'en': 'En'
             };
 
@@ -133,9 +120,9 @@ define([
         generateAutocompTree: function (loop) {
             var _this = this;
             if (this.storedTree) {
-                _this.$el.find('#' + _this.id).autocompTree({
+                _this.act = _this.$el.find('#' + _this.id).autocompTree({
                     wsUrl: _this.wsUrl,
-                    webservices: 'fakeInitForCompleteTree',
+                    webservices: 'YouShouldntReadThis',
                     language: { hasLanguage: true, lng: _this.lng },
                     display: {
                         isDisplayDifferent: true,
@@ -145,7 +132,8 @@ define([
                     },
                     inputValue: _this.value,
                     startId: _this.startId,
-                    storedTree: _this.storedTree
+                    storedTree: _this.storedTree,
+                    bbformeditor: _this
                 });
 
                 if (_this.translateOnRender) {
@@ -163,8 +151,7 @@ define([
                 }
                 _this.FirstRender = false;
             }
-            else if (loop < 30)
-            {
+            else if (loop < 30) {
                 setTimeout(function () { _this.generateAutocompTree(loop + 1); }, 1000);
             }
         },
@@ -178,19 +165,33 @@ define([
             }).defer();
             return this;
         },
+
         applyTranslation: function (translatedDatas, isTranslated) {
             var _this = this;
             var data = translatedDatas;
 
             $('#divAutoComp_' + _this.id).removeClass('error');
 
-            var translatedValue = data["TTop_FullPathTranslated"];
+            //var translatedValue = data["TTop_FullPathTranslated"];
             if (isTranslated) {
+                /*
                 if (_this.displayValueName == 'valueTranslated') {
                     translatedValue = data["TTop_NameTranslated"];
-                }
-                _this.$el.find('#' + _this.id).val(translatedValue);
+                }*/
+                _this.$el.find('#' + _this.id).val(data['TTop_NameTranslated']);
                 _this.$el.find('#' + _this.id + '_value').val(data['TTop_FullPath']);
+            }
+
+            _this.displayErrorMsg(false);
+        },
+
+        applyRawTranslation: function (rawTranslation, rawFullPathToSave, isTranslated) {
+            var _this = this;
+            $('#divAutoComp_' + _this.id).removeClass('error');
+
+            if (isTranslated) {
+                _this.$el.find('#' + _this.id).val(rawTranslation);
+                _this.$el.find('#' + _this.id + '_value').val(rawFullPathToSave);
             }
 
             _this.displayErrorMsg(false);
@@ -198,7 +199,7 @@ define([
 
         validateAndTranslate: function (value, isTranslated) {
             var _this = this;
-            
+
             if (value == null || value == '') {
                 _this.displayErrorMsg(false);
                 return;
@@ -208,13 +209,11 @@ define([
                 TypeField = 'Name';
             }
             var erreur;
-            var translationDatas = GlobalModelManager.getTranslationDatasFor(value,_this.lng);
-            if (translationDatas)
-            {
+            var translationDatas = GlobalModelManager.getTranslationDatasFor(value, _this.lng);
+            if (translationDatas) {
                 _this.applyTranslation(translationDatas, isTranslated);
             }
-            else
-            {
+            else {
                 $.ajax({
                     url: _this.wsUrl + "/getTraductionByType",
                     //timeout: 3000,

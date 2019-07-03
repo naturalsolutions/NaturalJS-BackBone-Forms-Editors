@@ -1,10 +1,10 @@
 ﻿<div>
-    <div id="ExistingFiles_<%=id%>">
+    <div id="ExistingFiles_<%=id%>" style="margin-bottom:15px;">
         truc
     </div>
     <input type="hidden" name="<%=key%>" />
     <input type="file" id="input_<%=id%>" multiple="" accept="<%=acceptedFiles%>" class="<%=editorClass%> UploadInForm"/>
-    <% if (askPortrait) { %><span id="isPortraitArea">Portrait&nbsp;&nbsp;<input type="checkbox" id="isPortrait" /></span><% } %>
+    <% if (askPortrait) { %><span id="isPortraitArea"><span data-i18n="gen.idPicture">ID Picture</span>&nbsp;&nbsp;<input type="checkbox" id="isPortrait" /></span><% } %>
     <p class="upload-status" style="display: none" id="UploadStatus<%=id%>"><span class="loader"></span>Uploading&hellip;</p>
     <p class="upload-error error " id="UploadError<%=id%>" style="display: none">Error</p>
     <input type="button" style="display: none" class="uploadBtn" id="bbfUploadBtn_<%=id%>" value="Upload" />

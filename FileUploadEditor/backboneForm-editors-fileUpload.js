@@ -5,9 +5,9 @@ define([
 	'backbone_forms',
     'requirejs-text!./FileUploadEditorTemplate.html',
     './MimeType',
-    'sweetalert'
-
-], function ($, _, Backbone, Form, Template, MimeTypeObject,sweetAlert
+    'sweetalert',
+    'i18n'
+], function ($, _, Backbone, Form, Template, MimeTypeObject,sweetAlert, i18n
 ) {
     'use strict';
     return Form.editors.FileUploadEditor = Form.editors.Base.extend({
@@ -86,13 +86,17 @@ define([
         },
 
         displayExistingFiles: function (options) {
-
             var HtmlExistingFiles = "";
-
 
             for (var i = 0 ; i < this.existingFiles.length ; i++) {
                 var file = this.existingFiles[i];
-                HtmlExistingFiles += '<div><span class="downloadBtn" FileId="' + file.FileId + '"  id="FileGet_' + this.id + '" getUrl="' + file.url + '" fileExtension="' + file.FileExtension + '"  >' + file.FileName + '</span>';
+                HtmlExistingFiles += '<div>';
+
+                if (file.portrait && (!options.isPortrait || options.isPortrait == file.FileId)){
+                    HtmlExistingFiles += '<span id="portraitIcon" class="reneco reneco-image_file"></span>&nbsp&nbsp';
+                }
+
+                HtmlExistingFiles += '<span class="downloadBtn" FileId="' + file.FileId + '"  id="FileGet_' + this.id + '" getUrl="' + file.url + '" fileExtension="' + file.FileExtension + '"  >' + file.FileName + '</span>';
                 if (this.schema.editable != false) {
                     HtmlExistingFiles += '&nbsp&nbsp<span id="FileDel_' + this.id + '" class="deletefileBtn reneco reneco-trash" delUrl="' + file.urldelete + '" FileId="' + file.FileId + '" ></span></div>';
                 }
@@ -129,11 +133,12 @@ define([
             }
             var re = new RegExp(/.[a-zA-Z]+$/);
             var ext = $('#input_' + this.id)[0].files[0].name.toLowerCase().match(re);
+            var isPortrait = ($("#isPortrait").is(':checked') ? 1 : 0);
 
             fd.append('fileName', $('#input_' + this.id)[0].files[0].name);
             fd.append('fileExtension', ext);
-            fd.append('isPortrait', ($("#isPortrait").is(':checked') ? 1 : 0));
-            if ($("#isPortrait").is(':checked'))
+            fd.append('isPortrait', isPortrait);
+            if (isPortrait == 1)
                 $("#isPortrait").prop('checked', false);
             $.ajax({
                 type: 'POST',
@@ -142,9 +147,8 @@ define([
                 contentType: false,
                 data: fd
             }).success(function (data) {
-
                 _this.existingFiles.push(data);
-                _this.displayExistingFiles({ onInit: true });
+                _this.displayExistingFiles({ onInit: true, isPortrait: (isPortrait ? data.FileId : null) });
                 // TODO ajouter le fichier au modèle et refaire un display
             }
 
@@ -180,7 +184,10 @@ define([
             }
             var _this = this;
 
-            sweetAlert({ title: "Are you sure?", text: "Are you sur you want to delete the file ", type: "warning", confirmButtonText: "Yes, delete file", cancelButtonText: "No, keep the file", showCancelButton: true }
+            sweetAlert({
+                title: i18n.t("alerts.areYouSure"), text: i18n.t("alerts.sureDeleteFile"), type: "warning",
+                confirmButtonText: i18n.t("alerts.yesDelete"), cancelButtonText: i18n.t("noKeep"), showCancelButton: true
+            }
                         , function (isConfirm) {
                             if (isConfirm) {
                                 var fileid = $(eventType.currentTarget).attr('fileid');

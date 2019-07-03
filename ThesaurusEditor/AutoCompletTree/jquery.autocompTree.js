@@ -98,7 +98,7 @@
 					htmlInsert += '<div class="fancytreeview" id="treeView' + $me.attr('id') + '" style="display:none"></div>';
 					$me.parent().append(htmlInsert);
 
-					//Insertion de la valeur dans l'input
+				    //Insertion de la valeur dans l'input
 					$me.val(parametres.inputValue);
 					$meFancy = $('#treeView' + $me.attr("id"));
 					//Initialisation de l'arbre
@@ -128,7 +128,9 @@
                         ,
 					    defaultNode: topNode,
 						//Permet si l'arbre et en mode filter d'afficher les enfants des termes filtrés -> submatch
-						renderNode: function (event, data) {
+					    renderNode: function (event, data) {
+					        var bbfe = parametres.bbformeditor;
+
 						    if (this.options.renderCountdown > 0)
 						    {
                                 if (this.options.renderCountdown == 1)
@@ -148,11 +150,13 @@
 								}
 							}
 						},
-						//Servant ici a afficher les termes enfants des termes filtré
-						click: function (event, data) {
-							var node = data.node,
-								tt = $.ui.fancytree.getEventTargetType(event.originalEvent);
-							//Bubbles permet de déterminer si l'evt vient d'un click souris oud'un faux clique setExpand
+
+					    click: function (event, data) {
+					        console.log("--------- flag3");
+						    var node = data.node;
+						    var tt = $.ui.fancytree.getEventTargetType(event.originalEvent);
+						    var bbfe = parametres.bbformeditor;
+
 							if (tt === "expander" && event.bubbles) {
 								var tree = data.tree.$div;
 								if (tree.hasClass("fancytree-ext-filter")) {
@@ -161,19 +165,23 @@
 									node.span.className = node.span.className.replace("fancytree-node", "fancytree-node fancytree-expanded");
 								}
 							}
+
+							setTimeout(function () {
+							    bbfe.applyRawTranslation(node.data.valueTranslated, node.data.fullpath, true);
+							}, 10);
 						},
 						loadChildren: function (event, data) {
 						    if (data.node.children.length == 0)
 						    {
-						        $me.val(data.options.defaultNode.data.fullpathTranslated);
-						        $("#" + $me.attr('id') + parametres.display.suffixeId).val(data.options.defaultNode.data.fullpath);
+						        $me.val(data.options.defaultNode.data.fullpath);
+						        $("#" + $me.attr('id') + parametres.display.suffixeId).val(data.options.defaultNode.data.fullpathTranslated);
 						    }
 						},
 						//evenement d'activation de l'arbre (au clic)
 						activate: function (event, data) {
 							var tree = $("#treeView" + $me.attr("id")).fancytree('getTree');
 							if (parametres.display.isDisplayDifferent) {
-								$me.val(data.node.data[parametres.display.displayValueName]);
+							    $me.val(data.node.data[parametres.display.displayValueName]);
 								$('[name=' + $me.attr('name') + parametres.display.suffixeId + ']').val(data.node.data[parametres.display.storedValueName]);
 								$("#treeView" + $me.attr("id")).css('display', 'none');
 								tree.activateKey(false);
@@ -199,24 +207,18 @@
 						    {
 						        if (data.tree.data.key != "0")
 						        {
-						            $me.val(data.tree.data.fullpathTranslated);
-						            $("#" + $me.attr('id') + parametres.display.suffixeId).val(data.tree.data.fullpath);
+						            $me.val(data.tree.data.fullpath);
+						            $("#" + $me.attr('id') + parametres.display.suffixeId).val(data.tree.data.fullpathTranslated);
 						        }
 						        else
 						        {
-						            $me.val(data.tree.rootNode.children[0].data.fullpathTranslated);
-						            $("#" + $me.attr('id') + parametres.display.suffixeId).val(
-                                        data.tree.rootNode.children[0].data.fullpath);
+						            $me.val(data.tree.rootNode.children[0].data.fullpath);
+						            $("#" + $me.attr('id') + parametres.display.suffixeId).val(data.tree.rootNode.children[0].data.fullpathTranslated);
 						        }
 						    }
 						}
 					});
-				    //Permet l'affichage du treeview au focus sur l'input
-                    /* TODO DEPRECATED??
-                    if ($meFancy[0].children[0].childElementCount == 0) {
-					    console.log($meFancy[0].children[0].data);
-					}
-                    */
+
 					$me.focus(function () {
 
 						$("div[id^=treeView]").each(function () {
