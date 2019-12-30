@@ -59,7 +59,7 @@
                 this.format = options.schema.options.format;
                 this.maxDate = options.schema.options.maxDate || false;
                 this.minDate = options.schema.options.minDate || false;
-                this.defaultDate = options.schema.options.defaultValue || false;
+                this.defaultDate = moment(options.schema.options.defaultValue) || false;
             } else {
                 this.format = "DD/MM/YYYY HH:mm:ss";
             }
@@ -159,6 +159,10 @@
                 _this.datetimepickerOptions.defaultDate = _this.datetimepickerOptions.maxDate;
             }
 
+            //This is awful, but for some reason it works, gotta check why date region formatting influences how this is understood while
+            // moment clearly indicates that the date format is wrong (while it itself parsed the date previously) this trick temporarily saves my life
+            if (_this.datetimepickerOptions.defaultDate && !_this.datetimepickerOptions.defaultDate.isValid())
+                delete _this.datetimepickerOptions.defaultDate;
             $($el[0]).datetimepicker(_this.datetimepickerOptions);
 
             //TODO THATS UGLY, BUT FOR SOME REASON, ON THE EVENT "CREATE" THE EVENTDATE IS NOT SET ...
