@@ -160,9 +160,7 @@ define([
             var $el = $(this.template);
             this.setElement($el);
             var _this = this;
-            _(function () {
-                _this.generateAutocompTree(0);
-            }).defer();
+            setTimeout(function () { _this.generateAutocompTree(0); }, 0);
             return this;
         },
 
